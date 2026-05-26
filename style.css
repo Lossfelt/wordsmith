@@ -1,0 +1,141 @@
+body {
+  font-family: system-ui, sans-serif;
+  background: #111;
+  color: #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  margin: 0;
+}
+h1 {
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+/* Kontrollrad */
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  align-items: flex-end;
+}
+.btn-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+/* Knapper */
+button {
+  background: #222;
+  color: #eee;
+  border: 1px solid #444;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+button.active {
+  background: #2a6;
+  border-color: #2a6;
+  color: #000;
+}
+button:hover:not(.active) {
+  background: #333;
+}
+
+/* Popover */
+.popover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1c1c1c;
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 0.75rem 1rem 0.8rem;
+  min-width: 210px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s, visibility 0.15s;
+  z-index: 100;
+}
+/* Usynlig bro mellom popover og knapp så hover ikke mistes i gapet */
+.popover::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 10px;
+}
+.btn-wrap:hover .popover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.popover-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #666;
+  margin-bottom: 0.6rem;
+}
+.param-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.82rem;
+  color: #aaa;
+  margin-bottom: 3px;
+}
+.param-row .val {
+  color: #eee;
+  font-variant-numeric: tabular-nums;
+  min-width: 3.5ch;
+  text-align: right;
+}
+.popover input[type=range] {
+  width: 100%;
+  accent-color: #2a6;
+  margin-bottom: 0.55rem;
+  cursor: pointer;
+}
+.popover input[type=range]:last-of-type {
+  margin-bottom: 0;
+}
+
+/* Grid */
+#grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+  background: #000;
+  padding: 1rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+.cell {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier New', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: #1a1a1a;
+  color: #6f6;
+  border-radius: 3px;
+  user-select: none;
+  position: relative;
+  will-change: transform, filter;
+}
+.status {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #888;
+}

@@ -1,160 +1,16 @@
 <!DOCTYPE html>
 <html lang="no">
 <head>
-<meta charset="UTF-8">
-<title>Tegn-variant test</title>
-<style>
-  body {
-    font-family: system-ui, sans-serif;
-    background: #111;
-    color: #eee;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem;
-    margin: 0;
-  }
-  h1 {
-    font-size: 1.2rem;
-    font-weight: 400;
-    margin-bottom: 1rem;
-  }
-
-  /* Kontrollrad */
-  .controls {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    align-items: flex-end;
-  }
-  .btn-wrap {
-    position: relative;
-    display: inline-block;
-  }
-
-  /* Knapper */
-  button {
-    background: #222;
-    color: #eee;
-    border: 1px solid #444;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
-  button.active {
-    background: #2a6;
-    border-color: #2a6;
-    color: #000;
-  }
-  button:hover:not(.active) {
-    background: #333;
-  }
-
-  /* Popover */
-  .popover {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1c1c1c;
-    border: 1px solid #555;
-    border-radius: 8px;
-    padding: 0.75rem 1rem 0.8rem;
-    min-width: 210px;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 0.15s, visibility 0.15s;
-    z-index: 100;
-  }
-  /* usynlig bro mellom popover og knapp så hover ikke mistes i gapet */
-  .popover::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    height: 10px;
-  }
-  .btn-wrap:hover .popover {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-  }
-  .popover-title {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #666;
-    margin-bottom: 0.6rem;
-  }
-  .param-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-size: 0.82rem;
-    color: #aaa;
-    margin-bottom: 3px;
-  }
-  .param-row .val {
-    color: #eee;
-    font-variant-numeric: tabular-nums;
-    min-width: 3.5ch;
-    text-align: right;
-  }
-  .popover input[type=range] {
-    width: 100%;
-    accent-color: #2a6;
-    margin-bottom: 0.55rem;
-    cursor: pointer;
-  }
-  .popover input[type=range]:last-of-type {
-    margin-bottom: 0;
-  }
-
-  /* Grid */
-  #grid {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 4px;
-    background: #000;
-    padding: 1rem;
-    border: 1px solid #333;
-    border-radius: 8px;
-  }
-  .cell {
-    width: 2.5rem;
-    height: 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Courier New', monospace;
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: #1a1a1a;
-    color: #6f6;
-    border-radius: 3px;
-    user-select: none;
-    position: relative;
-    will-change: transform, filter;
-  }
-  .status {
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    color: #888;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Tegn-variant test</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <br>
-  <br>
-  <br>
+  <br><br><br>
   <h1>10 x 10 tegn-grid</h1>
+
   <div class="controls">
 
-    <!-- Variant A -->
     <div class="btn-wrap">
       <button id="btnA">Variant A: bytt alle</button>
       <div class="popover">
@@ -167,7 +23,6 @@
       </div>
     </div>
 
-    <!-- Variant B -->
     <div class="btn-wrap">
       <button id="btnB">Variant B: bytt ett</button>
       <div class="popover">
@@ -180,7 +35,6 @@
       </div>
     </div>
 
-    <!-- Variant C -->
     <div class="btn-wrap">
       <button id="btnC">Variant C: TTL per celle</button>
       <div class="popover">
@@ -204,186 +58,9 @@
   <div id="grid"></div>
   <div class="status" id="status">Variant: ingen</div>
 
-<script>
-  const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const SIZE  = 10;
-  const TOTAL = SIZE * SIZE;
-
-  const grid     = document.getElementById('grid');
-  const statusEl = document.getElementById('status');
-  const btnA     = document.getElementById('btnA');
-  const btnB     = document.getElementById('btnB');
-  const btnC     = document.getElementById('btnC');
-  const btnStop  = document.getElementById('btnStop');
-
-  // Justerbare parametere
-  let intervalA = 1000;
-  let intervalB = 1000;
-  let ttlMin    = 1000;
-  let ttlMax    = 5000;
-
-  // Slider-referanser
-  const sliderAInterval  = document.getElementById('aInterval');
-  const sliderBInterval  = document.getElementById('bInterval');
-  const sliderCMin       = document.getElementById('cMin');
-  const sliderCMax       = document.getElementById('cMax');
-  const valAInterval     = document.getElementById('aIntervalVal');
-  const valBInterval     = document.getElementById('bIntervalVal');
-  const valCMin          = document.getElementById('cMinVal');
-  const valCMax          = document.getElementById('cMaxVal');
-
-  sliderAInterval.addEventListener('input', () => {
-    intervalA = +sliderAInterval.value;
-    valAInterval.textContent = intervalA;
-    if (mode === 'A') setMode('A');
-  });
-
-  sliderBInterval.addEventListener('input', () => {
-    intervalB = +sliderBInterval.value;
-    valBInterval.textContent = intervalB;
-    if (mode === 'B') setMode('B');
-  });
-
-  sliderCMin.addEventListener('input', () => {
-    ttlMin = +sliderCMin.value;
-    // Tving maks til å være minst 100ms over min
-    if (ttlMax <= ttlMin) {
-      ttlMax = Math.min(ttlMin + 100, 10000);
-      sliderCMax.value = ttlMax;
-      valCMax.textContent = ttlMax;
-    }
-    valCMin.textContent = ttlMin;
-    if (mode === 'C') setMode('C');
-  });
-
-  sliderCMax.addEventListener('input', () => {
-    ttlMax = +sliderCMax.value;
-    // Tving min til å være minst 100ms under maks
-    if (ttlMin >= ttlMax) {
-      ttlMin = Math.max(ttlMax - 100, 100);
-      sliderCMin.value = ttlMin;
-      valCMin.textContent = ttlMin;
-    }
-    valCMax.textContent = ttlMax;
-    if (mode === 'C') setMode('C');
-  });
-
-  // ---- Celler ----
-  const cells = [];
-  function randChar() {
-    return CHARS[Math.floor(Math.random() * CHARS.length)];
-  }
-
-  // ---- Forstørrelsesglassparametere ----
-  const MAX_SCALE  = 0.5;
-  const SIGMA      = 52;
-  const MAX_BRIGHT = 0.6;
-
-  let cellCenters = null;
-
-  function buildCellCenters() {
-    const gridRect = grid.getBoundingClientRect();
-    cellCenters = cells.map(c => {
-      const r = c.getBoundingClientRect();
-      return {
-        x: r.left - gridRect.left + r.width  / 2,
-        y: r.top  - gridRect.top  + r.height / 2
-      };
-    });
-  }
-
-  function updateLens(mouseX, mouseY) {
-    if (!cellCenters) buildCellCenters();
-    for (let i = 0; i < TOTAL; i++) {
-      const dx = mouseX - cellCenters[i].x;
-      const dy = mouseY - cellCenters[i].y;
-      const g  = Math.exp(-(dx * dx + dy * dy) / (2 * SIGMA * SIGMA));
-      cells[i].style.transform = `scale(${(1 + MAX_SCALE * g).toFixed(4)})`;
-      cells[i].style.filter    = `brightness(${(1 + MAX_BRIGHT * g).toFixed(4)})`;
-      cells[i].style.zIndex    = Math.round(g * 30);
-    }
-  }
-
-  function resetLens() {
-    for (const c of cells) {
-      c.style.transform = '';
-      c.style.filter    = '';
-      c.style.zIndex    = '';
-    }
-  }
-
-  grid.addEventListener('mousemove', e => {
-    const rect = grid.getBoundingClientRect();
-    updateLens(e.clientX - rect.left, e.clientY - rect.top);
-  });
-  grid.addEventListener('mouseleave', resetLens);
-  window.addEventListener('resize', () => { cellCenters = null; });
-
-  for (let i = 0; i < TOTAL; i++) {
-    const c = document.createElement('div');
-    c.className = 'cell';
-    c.textContent = randChar();
-    grid.appendChild(c);
-    cells.push(c);
-  }
-
-  // ---- Modusstyr ----
-  let timer      = null;
-  let cellTimers = [];
-  let mode       = null;
-
-  function randTTL() {
-    return ttlMin + Math.random() * (ttlMax - ttlMin);
-  }
-
-  function stopCellTimers() {
-    for (const t of cellTimers) clearTimeout(t);
-    cellTimers = [];
-  }
-
-  function stop() {
-    if (timer) clearInterval(timer);
-    timer = null;
-    stopCellTimers();
-  }
-
-  function scheduleCellC(idx) {
-    cellTimers[idx] = setTimeout(() => {
-      if (mode !== 'C') return;
-      cells[idx].textContent = randChar();
-      scheduleCellC(idx);
-    }, randTTL());
-  }
-
-  function setMode(newMode) {
-    stop();
-    mode = newMode;
-    btnA.classList.toggle('active', mode === 'A');
-    btnB.classList.toggle('active', mode === 'B');
-    btnC.classList.toggle('active', mode === 'C');
-
-    if (mode === 'A') {
-      statusEl.textContent = `Variant A: bytter alle hvert ${intervalA} ms`;
-      timer = setInterval(() => {
-        for (const c of cells) c.textContent = randChar();
-      }, intervalA);
-    } else if (mode === 'B') {
-      statusEl.textContent = `Variant B: bytter ett tilfeldig hvert ${intervalB} ms`;
-      timer = setInterval(() => {
-        cells[Math.floor(Math.random() * TOTAL)].textContent = randChar();
-      }, intervalB);
-    } else if (mode === 'C') {
-      statusEl.textContent = `Variant C: TTL ${ttlMin}–${ttlMax} ms per celle`;
-      for (let i = 0; i < TOTAL; i++) scheduleCellC(i);
-    } else {
-      statusEl.textContent = 'Variant: ingen';
-    }
-  }
-
-  btnA.addEventListener('click', () => setMode('A'));
-  btnB.addEventListener('click', () => setMode('B'));
-  btnC.addEventListener('click', () => setMode('C'));
-  btnStop.addEventListener('click', () => setMode(null));
-</script>
+  <!-- Lastes i rekkefølge: grid definerer cells[], lens og modes bruker den -->
+  <script src="grid.js"></script>
+  <script src="lens.js"></script>
+  <script src="modes.js"></script>
 </body>
 </html>

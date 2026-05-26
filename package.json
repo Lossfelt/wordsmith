@@ -1,0 +1,6 @@
+{
+  "name": "wordsmith",
+  "scripts": {
+    "start": "npx serve . --listen 3000"
+  }
+}
