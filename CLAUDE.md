@@ -12,26 +12,43 @@ Siden serveres på en dynamisk port (se terminaloutput). Forhåndsvisningspanele
 
 ## Arkitektur
 
-Ingen byggsteg. Tre script-filer lastes i rekkefølge via `<script src="...">` i `index.html` og deler global tilstand:
+Ingen byggsteg. Script-filer lastes i rekkefølge via `<script src="...">` i `index.html` og deler global tilstand via window-scope:
 
-| Fil | Ansvar |
-|---|---|
-| `grid.js` | Definerer `CHARS`, `SIZE`, `TOTAL`, `cells[]`, `randChar()`. Populerer `#grid` med 100 `.cell`-elementer ved innlasting. |
-| `lens.js` | Forstørrelsesglasseffekt. Lytter på `mousemove` over `#grid` og beregner gaussisk skalering (`scale`, `brightness`, `z-index`) per celle basert på avstand til musepeker. Bruker `cells[]` og `TOTAL` fra `grid.js`. |
-| `modes.js` | Modusstyr (A/B/C), parametervariable, slider-kobling og knapp-lyttere. Bruker `cells[]`, `TOTAL`, `randChar()` fra `grid.js`. |
+| Fil | Ansvar | Eksponerer |
+|---|---|---|
+| `grid.js` | Oppretter 100 `.cell`-elementer i `#grid` | `CHARS`, `SIZE`, `TOTAL`, `cells[]`, `randChar()` |
+| `lens.js` | Gaussisk forstørrelsesglasseffekt på `mousemove` | `toggleFog()`, `fogOfWar` |
+| `modes.js` | Variant A/B/C, parametere, slider-kobling, knapper | `setMode()` |
+| `inventory.js` | Klikk-plukking fra grid til inventory | – |
 
-**Lasterekkefølge er kritisk:** `grid.js` → `lens.js` → `modes.js`. `cells[]` må eksistere før de andre filene kjører.
+**Lasterekkefølge er kritisk:** `grid.js` → `lens.js` → `modes.js` → `inventory.js`
+
+## Nåværende funksjonalitet
+
+**Tre bytte-varianter** (velges med knapper, justeres via hover-popover):
+- **A** – bytter alle celler hvert N ms (default 1000)
+- **B** – bytter én tilfeldig celle hvert N ms (default 1000)
+- **C** – hver celle har individuell TTL på 1–5 sek (min/maks justerbart)
+
+**Forstørrelsesglasseffekt** – kontinuerlig gaussisk `scale` + `brightness` basert på musposisjon relativt til cellenes midtpunkter. Parametere øverst i `lens.js`: `MAX_SCALE`, `SIGMA`, `MAX_BRIGHT`, `MAX_BLUR`.
+
+**Fog of war** (toggle-knapp, gul når aktiv) – celler utenfor linsen får `blur(4px)`. Implementert i `lens.js` via `fogOfWar`-flagget og `toggleFog()`.
+
+**Plukking** – klikk på celle markerer den som `.picked` (tom, stiplet kant) og legger bokstaven som `.inventory-item` i `#inventory`. Alle varianter hopper over `.picked`-celler.
+
+## Neste steg (planlagt)
+
+Plukking er grunnlaget for en mekanikk der spilleren samler bokstaver for å danne ord eller lignende. Inventory er foreløpig kun akkumulerende – ingen interaksjon tilbake til grid.
 
 ## Legge til en ny variant
 
-1. Legg til en `btn-wrap`-blokk med knapp og popover i `index.html`
+1. Legg til `btn-wrap`-blokk med knapp og popover i `index.html`
 2. Legg til parametervariable og slider-kobling i `modes.js`
-3. Utvid `setMode()` med ny `else if`-gren
+3. Utvid `setMode()` med ny `else if`-gren og husk å hoppe over `.picked`-celler
 4. Legg til `classList.toggle('active', mode === 'X')` i `setMode()`
 
-## Linseparametere
+## CSS-konvensjoner
 
-Juster øverst i `lens.js`:
-- `MAX_SCALE` – maks zoom i senter (default `0.5` → 1.5×)
-- `SIGMA` – gaussisk spredningsradius i piksler (default `52` ≈ 1.2 cellebredder)
-- `MAX_BRIGHT` – maks lysstyrkeøkning i senter (default `0.6`)
+- Celle-tilstander: `.cell` (normal), `.cell.picked` (plukket – tom, stiplet)
+- Inventory: `.inventory` (container), `.inventory-label`, `.inventory-slots`, `.inventory-item`
+- Knapp-tilstander: `.active` (grønn for varianter, gul for fog-of-war via `.btn-fog.active`)
