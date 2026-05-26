@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<title>Tegn-variant test</title>
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    background: #111;
+    color: #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    margin: 0;
+  }
+  h1 {
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+  }
+  .controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  button {
+    background: #222;
+    color: #eee;
+    border: 1px solid #444;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  button.active {
+    background: #2a6;
+    border-color: #2a6;
+    color: #000;
+  }
+  button:hover:not(.active) {
+    background: #333;
+  }
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+    background: #000;
+    padding: 1rem;
+    border: 1px solid #333;
+    border-radius: 8px;
+  }
+  .cell {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: #1a1a1a;
+    color: #6f6;
+    border-radius: 3px;
+    user-select: none;
+    position: relative;
+    transition: transform 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+  }
+  .cell.focus {
+    transform: scale(1.35);
+    color: #afffaf;
+    box-shadow: 0 0 14px rgba(102, 255, 102, 0.55);
+    z-index: 30;
+  }
+  .cell.near {
+    transform: scale(1.18);
+    color: #8de88d;
+    box-shadow: 0 0 6px rgba(102, 255, 102, 0.25);
+    z-index: 20;
+  }
+  .cell.far {
+    transform: scale(1.09);
+    color: #7acc7a;
+    z-index: 10;
+  }
+  .status {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #888;
+  }
+</style>
+</head>
+<body>
+  <h1>10 x 10 tegn-grid</h1>
+  <div class="controls">
+    <button id="btnA">Variant A: bytt alle</button>
+    <button id="btnB">Variant B: bytt ett</button>
+    <button id="btnStop">Stopp</button>
+  </div>
+  <div id="grid"></div>
+  <div class="status" id="status">Variant: ingen</div>
+
+<script>
+  const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const SIZE = 10;
+  const TOTAL = SIZE * SIZE;
+  const grid = document.getElementById('grid');
+  const statusEl = document.getElementById('status');
+  const btnA = document.getElementById('btnA');
+  const btnB = document.getElementById('btnB');
+  const btnStop = document.getElementById('btnStop');
+
+  const cells = [];
+  function randChar() {
+    return CHARS[Math.floor(Math.random() * CHARS.length)];
+  }
+
+  function clearLens() {
+    for (const c of cells) c.classList.remove('focus', 'near', 'far');
+  }
+
+  function applyLens(idx) {
+    clearLens();
+    const row = Math.floor(idx / SIZE);
+    const col = idx % SIZE;
+    cells[idx].classList.add('focus');
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        if (dr === 0 && dc === 0) continue;
+        const r = row + dr, c2 = col + dc;
+        if (r < 0 || r >= SIZE || c2 < 0 || c2 >= SIZE) continue;
+        const isDiagonal = dr !== 0 && dc !== 0;
+        cells[r * SIZE + c2].classList.add(isDiagonal ? 'far' : 'near');
+      }
+    }
+  }
+
+  for (let i = 0; i < TOTAL; i++) {
+    const c = document.createElement('div');
+    c.className = 'cell';
+    c.textContent = randChar();
+    const idx = i;
+    c.addEventListener('mouseenter', () => applyLens(idx));
+    c.addEventListener('mouseleave', clearLens);
+    grid.appendChild(c);
+    cells.push(c);
+  }
+
+  let timer = null;
+  let mode = null;
+
+  function stop() {
+    if (timer) clearInterval(timer);
+    timer = null;
+  }
+
+  function setMode(newMode) {
+    stop();
+    mode = newMode;
+    btnA.classList.toggle('active', mode === 'A');
+    btnB.classList.toggle('active', mode === 'B');
+    if (mode === 'A') {
+      statusEl.textContent = 'Variant A: bytter alle hvert sekund';
+      timer = setInterval(() => {
+        for (const c of cells) c.textContent = randChar();
+      }, 1000);
+    } else if (mode === 'B') {
+      statusEl.textContent = 'Variant B: bytter ett tilfeldig hvert sekund';
+      timer = setInterval(() => {
+        const idx = Math.floor(Math.random() * TOTAL);
+        cells[idx].textContent = randChar();
+      }, 1000);
+    } else {
+      statusEl.textContent = 'Variant: ingen';
+    }
+  }
+
+  btnA.addEventListener('click', () => setMode('A'));
+  btnB.addEventListener('click', () => setMode('B'));
+  btnStop.addEventListener('click', () => setMode(null));
+</script>
+</body>
+</html>
