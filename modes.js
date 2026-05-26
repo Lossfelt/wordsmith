@@ -26,7 +26,7 @@ function stop() {
 function scheduleCellC(idx) {
   cellTimers[idx] = setTimeout(() => {
     if (mode !== 'C') return;
-    cells[idx].textContent = randChar();
+    if (!cells[idx].classList.contains('picked')) cells[idx].textContent = randChar();
     scheduleCellC(idx);
   }, randTTL());
 }
@@ -44,13 +44,16 @@ function setMode(newMode) {
   if (mode === 'A') {
     statusEl.textContent = `Variant A: bytter alle hvert ${intervalA} ms`;
     timer = setInterval(() => {
-      for (const c of cells) c.textContent = randChar();
+      for (const c of cells) {
+        if (!c.classList.contains('picked')) c.textContent = randChar();
+      }
     }, intervalA);
 
   } else if (mode === 'B') {
     statusEl.textContent = `Variant B: bytter ett tilfeldig hvert ${intervalB} ms`;
     timer = setInterval(() => {
-      cells[Math.floor(Math.random() * TOTAL)].textContent = randChar();
+      const available = cells.filter(c => !c.classList.contains('picked'));
+      if (available.length) available[Math.floor(Math.random() * available.length)].textContent = randChar();
     }, intervalB);
 
   } else if (mode === 'C') {
