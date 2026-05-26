@@ -139,3 +139,11 @@ button:hover:not(.active) {
   font-size: 0.9rem;
   color: #888;
 }
+.btn-fog {
+  margin-top: 0.75rem;
+}
+.btn-fog.active {
+  background: #b6820a;
+  border-color: #b6820a;
+  color: #000;
+}

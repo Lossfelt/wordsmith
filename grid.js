@@ -1,6 +1,6 @@
 // Initialiserer 10x10 celle-grid og eksponerer delt tilstand
 
-const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ';
 const SIZE  = 10;
 const TOTAL = SIZE * SIZE;
 

@@ -119,3 +119,8 @@ document.getElementById('btnA').addEventListener('click', () => setMode('A'));
 document.getElementById('btnB').addEventListener('click', () => setMode('B'));
 document.getElementById('btnC').addEventListener('click', () => setMode('C'));
 document.getElementById('btnStop').addEventListener('click', () => setMode(null));
+
+document.getElementById('btnFog').addEventListener('click', () => {
+  const active = toggleFog();
+  document.getElementById('btnFog').classList.toggle('active', active);
+});
