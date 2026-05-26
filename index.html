@@ -78,6 +78,7 @@
   <div class="controls">
     <button id="btnA">Variant A: bytt alle</button>
     <button id="btnB">Variant B: bytt ett</button>
+    <button id="btnC">Variant C: TTL per celle</button>
     <button id="btnStop">Stopp</button>
   </div>
   <div id="grid"></div>
@@ -156,11 +157,33 @@
   }
 
   let timer = null;
+  let cellTimers = [];
   let mode = null;
+
+  const btnC = document.getElementById('btnC');
+
+  function randTTL() {
+    return 1000 + Math.random() * 4000; // 1–5 sekunder
+  }
+
+  function stopCellTimers() {
+    for (const t of cellTimers) clearTimeout(t);
+    cellTimers = [];
+  }
+
+  function scheduleCellC(idx) {
+    const t = setTimeout(() => {
+      if (mode !== 'C') return;
+      cells[idx].textContent = randChar();
+      scheduleCellC(idx);
+    }, randTTL());
+    cellTimers[idx] = t;
+  }
 
   function stop() {
     if (timer) clearInterval(timer);
     timer = null;
+    stopCellTimers();
   }
 
   function setMode(newMode) {
@@ -168,6 +191,7 @@
     mode = newMode;
     btnA.classList.toggle('active', mode === 'A');
     btnB.classList.toggle('active', mode === 'B');
+    btnC.classList.toggle('active', mode === 'C');
     if (mode === 'A') {
       statusEl.textContent = 'Variant A: bytter alle hvert sekund';
       timer = setInterval(() => {
@@ -179,6 +203,9 @@
         const idx = Math.floor(Math.random() * TOTAL);
         cells[idx].textContent = randChar();
       }, 1000);
+    } else if (mode === 'C') {
+      statusEl.textContent = 'Variant C: kvar celle har tilfeldig TTL (1–5 s)';
+      for (let i = 0; i < TOTAL; i++) scheduleCellC(i);
     } else {
       statusEl.textContent = 'Variant: ingen';
     }
@@ -186,6 +213,7 @@
 
   btnA.addEventListener('click', () => setMode('A'));
   btnB.addEventListener('click', () => setMode('B'));
+  btnC.addEventListener('click', () => setMode('C'));
   btnStop.addEventListener('click', () => setMode(null));
 </script>
 </body>
