@@ -139,11 +139,31 @@ button:hover:not(.active) {
   font-size: 0.9rem;
   color: #888;
 }
-.btn-fog {
-  margin-top: 0.75rem;
-}
 .btn-fog.active {
   background: #b6820a;
   border-color: #b6820a;
   color: #000;
+}
+
+/* Inventory */
+.inventory {
+  margin-top: 1.5rem;
+  width: 630px; /* same visual width as grid incl. padding */
+  background: #000;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 0.6rem 1rem 0.8rem;
+}
+.inventory-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #444;
+  margin-bottom: 0.5rem;
+}
+.inventory-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 2.5rem;
 }
