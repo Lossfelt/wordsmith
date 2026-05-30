@@ -60,10 +60,15 @@ function toggleFog() {
 
 (function initLens() {
   const gridEl = document.getElementById('grid');
-  gridEl.addEventListener('mousemove', e => {
+  // Pointer events dekker mus (hover), touch (drag) og penn i ett sett lyttere.
+  // For mus fyrer pointermove ved hover; for touch kun mens fingeren er nede.
+  gridEl.addEventListener('pointermove', e => {
     const rect = gridEl.getBoundingClientRect();
     updateLens(e.clientX - rect.left, e.clientY - rect.top);
   });
-  gridEl.addEventListener('mouseleave', resetLens);
+  // Mus forlater grid → leave. Touch løfter fingeren → up/cancel.
+  gridEl.addEventListener('pointerleave', resetLens);
+  gridEl.addEventListener('pointerup', resetLens);
+  gridEl.addEventListener('pointercancel', resetLens);
   window.addEventListener('resize', () => { cellCenters = null; });
 })();

@@ -117,6 +117,9 @@ button:hover:not(.active) {
   padding: 1rem;
   border: 1px solid #333;
   border-radius: 8px;
+  /* Hindrer at nettleseren scroller/zoomer i stedet for å gi pointermove
+     under touch – nødvendig for at fingeren skal fungere som linse. */
+  touch-action: none;
 }
 .cell {
   width: 2.5rem;
