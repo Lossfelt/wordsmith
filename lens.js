@@ -1,10 +1,12 @@
-// Forstørrelsesglasseffekt – oppdaterer scale/brightness per celle
-// basert på gaussisk avstandsfunksjon fra musepeker
+// Forstørrelsesglass – avgrenset, sirkulær linse som følger pekeren.
+// Innenfor radiusen forstørres cellene og skyves litt utover (mild bule);
+// utenfor er de uberørt. En synlig glassring tegnes på pekerposisjonen.
 
-const MAX_SCALE  = 0.5;   // maks ekstra skalering i senter  (1 + 0.5 = 1.5×)
-const SIGMA      = 52;    // gaussisk spredning i piksler (~1.2 cellebredder)
-const MAX_BRIGHT = 0.6;   // maks ekstra lysstyrke i senter
-const MAX_BLUR   = 4;     // maks blur i piksler når fog of war er aktiv
+const LENS_CELLS  = 1.7;   // lupens radius målt i celler – skalerer med cellestørrelse
+const MAX_MAG     = 0.6;   // maks forstørrelse i senter (scale 1 + 0.6 = 1.6×)
+const MAX_BRIGHT  = 0.45;  // maks ekstra lysstyrke i senter
+const MAX_BLUR    = 4;     // maks blur i piksler når fog of war er aktiv
+const FOG_EDGE    = 10;    // px-bånd ved glasskanten der fog-blur tones inn
 
 const TOUCH_OFFSET_Y = 90; // touch: hvor langt over fingeren linsesentrum legges (px)
 const DRAG_THRESHOLD = 8;  // px bevegelse før en touch regnes som dra (ikke trykk)
@@ -16,6 +18,8 @@ let lastMouseY     = null;
 let gestureStartX  = 0;
 let gestureStartY  = 0;
 let didDrag        = false;
+let lensRing       = null;
+let lensRadius     = 78;   // px – beregnes fra cellestørrelse i buildCellCenters()
 
 function buildCellCenters() {
   const gridEl   = document.getElementById('grid');
@@ -27,20 +31,57 @@ function buildCellCenters() {
       y: r.top  - gridRect.top  + r.height / 2,
     };
   });
+  // Skaler lupens radius med cellestørrelsen, så den dekker like mange rader
+  // uansett skjerm (desktop ~40px-celler vs. mobil ~28px-celler).
+  if (cellCenters.length > 1) {
+    const step = cellCenters[1].x - cellCenters[0].x;  // cellebredde + gap
+    if (step > 0) lensRadius = LENS_CELLS * step;
+  }
+  if (lensRing) {
+    lensRing.style.width  = (lensRadius * 2) + 'px';
+    lensRing.style.height = (lensRadius * 2) + 'px';
+  }
 }
 
-function updateLens(mouseX, mouseY) {
+function updateLens(cx, cy) {
   if (!cellCenters) buildCellCenters();
-  lastMouseX = mouseX;
-  lastMouseY = mouseY;
+  lastMouseX = cx;
+  lastMouseY = cy;
+  const R = lensRadius;
   for (let i = 0; i < TOTAL; i++) {
-    const dx   = mouseX - cellCenters[i].x;
-    const dy   = mouseY - cellCenters[i].y;
-    const g    = Math.exp(-(dx * dx + dy * dy) / (2 * SIGMA * SIGMA));
-    const blur = fogOfWar ? ` blur(${(MAX_BLUR * (1 - g)).toFixed(2)}px)` : '';
-    cells[i].style.transform = `scale(${(1 + MAX_SCALE  * g).toFixed(4)})`;
+    // Vektor fra linsesentrum ut til cellen.
+    const dx = cellCenters[i].x - cx;
+    const dy = cellCenters[i].y - cy;
+    const d  = Math.sqrt(dx * dx + dy * dy);
+    const t  = d / R;   // 0 i senter, 1 ved kanten, > 1 utenfor
+
+    let g = 0, disp = 0;
+    if (t < 1) {
+      g = 1 - t;  // full effekt i senter, faller lineært til 0 ved kanten
+      // Mild bule: 0 forskyvning i både senter og kant, endelig stigning i
+      // senter (ingen «hopp» når nærmeste celle krysser sentrum).
+      disp = MAX_MAG * d * (1 - t);
+    }
+    const mag = 1 + MAX_MAG * g;
+    const ux  = d ? dx / d : 0;
+    const uy  = d ? dy / d : 0;
+
+    // Fog of war: alt INNENFOR glasset helt klart, full blur utenfor, med et
+    // mykt overgangsbånd (FOG_EDGE) helt ytterst ved kanten.
+    let blur = '';
+    if (fogOfWar) {
+      const bt = Math.min(1, Math.max(0, (d - (R - FOG_EDGE)) / FOG_EDGE));
+      blur = ` blur(${(MAX_BLUR * bt).toFixed(2)}px)`;
+    }
+
+    cells[i].style.transform = `translate(${(ux * disp).toFixed(2)}px, ${(uy * disp).toFixed(2)}px) scale(${mag.toFixed(4)})`;
     cells[i].style.filter    = `brightness(${(1 + MAX_BRIGHT * g).toFixed(4)})${blur}`;
     cells[i].style.zIndex    = Math.round(g * 30);
+  }
+  if (lensRing) {
+    lensRing.style.left    = cx + 'px';
+    lensRing.style.top     = cy + 'px';
+    lensRing.style.display = 'block';
   }
 }
 
@@ -52,6 +93,7 @@ function resetLens() {
     c.style.zIndex    = '';
     c.style.filter    = fogOfWar ? `blur(${MAX_BLUR}px)` : '';
   }
+  if (lensRing) lensRing.style.display = 'none';
 }
 
 function toggleFog() {
@@ -66,6 +108,15 @@ function toggleFog() {
 
 (function initLens() {
   const gridEl = document.getElementById('grid');
+
+  // Glassringen tegnes som et absolutt plassert barn av grid (som er
+  // position: relative). pointer-events: none så den ikke spiser klikk.
+  lensRing = document.createElement('div');
+  lensRing.className = 'lens-ring';
+  lensRing.style.width  = (lensRadius * 2) + 'px';
+  lensRing.style.height = (lensRadius * 2) + 'px';
+  gridEl.appendChild(lensRing);
+
   // Pointer events dekker mus (hover), touch (drag) og penn i ett sett lyttere.
   // For mus fyrer pointermove ved hover; for touch kun mens fingeren er nede.
 

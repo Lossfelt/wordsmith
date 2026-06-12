@@ -122,6 +122,8 @@ button:hover:not(.active) {
   /* Fyller skjermbredden på mobil, men maks ~470px (= 40px-celler) på desktop. */
   box-sizing: border-box;
   width: min(100%, 470px);
+  /* Forankringspunkt for den absolutt plasserte glassringen (.lens-ring). */
+  position: relative;
   /* Hindrer at nettleseren scroller/zoomer i stedet for å gi pointermove
      under touch – nødvendig for at fingeren skal fungere som linse. */
   touch-action: none;
@@ -146,6 +148,26 @@ button:hover:not(.active) {
   margin-top: 1rem;
   font-size: 0.9rem;
   color: #888;
+}
+
+/* Glassring – synlig kant på forstørrelsesglasset. Følger pekeren via JS
+   (left/top settes i lens.js); sentreres på punktet med translate. */
+.lens-ring {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  /* Lys, tynn rand så glasset synes mot svart bakgrunn. */
+  border: 2px solid rgba(235, 238, 245, 0.55);
+  /* Indre glans + indre skygge gir dybde; ytre skygge løfter glasset. */
+  box-shadow:
+    inset 0 0 14px rgba(255, 255, 255, 0.10),
+    inset 0 0 0 4px rgba(0, 0, 0, 0.22),
+    0 4px 18px rgba(0, 0, 0, 0.6);
+  /* Svak glans øverst til venstre. */
+  background: radial-gradient(circle at 38% 30%, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0) 46%);
+  pointer-events: none;
+  display: none;
+  z-index: 60;
 }
 .btn-fog.active {
   background: #b6820a;
