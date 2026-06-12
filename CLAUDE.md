@@ -30,11 +30,13 @@ Ingen byggsteg. Script-filer lastes i rekkefølge via `<script src="...">` i `in
 - **B** – bytter én tilfeldig celle hvert N ms (default 1000)
 - **C** – hver celle har individuell TTL på 1–5 sek (min/maks justerbart)
 
-**Forstørrelsesglasseffekt** – kontinuerlig gaussisk `scale` + `brightness` basert på musposisjon relativt til cellenes midtpunkter. Parametere øverst i `lens.js`: `MAX_SCALE`, `SIGMA`, `MAX_BRIGHT`, `MAX_BLUR`.
+**Forstørrelsesglasseffekt** – kontinuerlig gaussisk `scale` + `brightness` basert på pekerposisjon relativt til cellenes midtpunkter. Drevet av pointer events, så det fungerer for både mus (hover) og touch. Parametere øverst i `lens.js`: `MAX_SCALE`, `SIGMA`, `MAX_BRIGHT`, `MAX_BLUR`.
+
+**Touch-tilpasning** (mobil) – for `pointerType !== 'mouse'` løftes linsesentrum `TOUCH_OFFSET_Y` px over fingeren (klampet ved toppen) så fingeren ikke dekker det forstørrede området, og linsen nullstilles **ikke** ved `pointerup` – den blir stående så du rekker å sikte og plukke. En dra (bevegelse > `DRAG_THRESHOLD`) setter `window.lensIgnoreClick` slik at draginga bare posisjonerer og ikke plukker; et separat trykk plukker. `#grid` har `touch-action: none` så draging ikke blir spist av scroll.
 
 **Fog of war** (toggle-knapp, gul når aktiv) – celler utenfor linsen får `blur(4px)`. Implementert i `lens.js` via `fogOfWar`-flagget og `toggleFog()`.
 
-**Plukking** – klikk på celle markerer den som `.picked` (tom, stiplet kant) og legger bokstaven som `.inventory-item` i `#inventory`. Alle varianter hopper over `.picked`-celler.
+**Plukking** – klikk på celle markerer den som `.picked` (tom, stiplet kant) og legger bokstaven som `.inventory-item` i `#inventory`. Alle varianter hopper over `.picked`-celler. På touch hopper klikk-handleren i `inventory.js` over plukking når `window.lensIgnoreClick` er satt (dvs. klikket kom fra en linse-dra, ikke et trykk).
 
 ## Neste steg (planlagt)
 

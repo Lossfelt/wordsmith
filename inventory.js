@@ -5,6 +5,9 @@
 
   cells.forEach(cell => {
     cell.addEventListener('click', () => {
+      // En touch-dra (kun posisjonering av linsen) ender også i et click –
+      // hopp over plukking i så fall. Flagget settes i lens.js.
+      if (window.lensIgnoreClick) { window.lensIgnoreClick = false; return; }
       if (cell.classList.contains('picked')) return;
       const letter = cell.textContent.trim();
       if (!letter) return;

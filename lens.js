@@ -6,10 +6,16 @@ const SIGMA      = 52;    // gaussisk spredning i piksler (~1.2 cellebredder)
 const MAX_BRIGHT = 0.6;   // maks ekstra lysstyrke i senter
 const MAX_BLUR   = 4;     // maks blur i piksler når fog of war er aktiv
 
-let cellCenters = null;
-let fogOfWar    = false;
-let lastMouseX  = null;
-let lastMouseY  = null;
+const TOUCH_OFFSET_Y = 90; // touch: hvor langt over fingeren linsesentrum legges (px)
+const DRAG_THRESHOLD = 8;  // px bevegelse før en touch regnes som dra (ikke trykk)
+
+let cellCenters    = null;
+let fogOfWar       = false;
+let lastMouseX     = null;
+let lastMouseY     = null;
+let gestureStartX  = 0;
+let gestureStartY  = 0;
+let didDrag        = false;
 
 function buildCellCenters() {
   const gridEl   = document.getElementById('grid');
@@ -62,13 +68,43 @@ function toggleFog() {
   const gridEl = document.getElementById('grid');
   // Pointer events dekker mus (hover), touch (drag) og penn i ett sett lyttere.
   // For mus fyrer pointermove ved hover; for touch kun mens fingeren er nede.
+
+  gridEl.addEventListener('pointerdown', e => {
+    gestureStartX = e.clientX;
+    gestureStartY = e.clientY;
+    didDrag = false;
+    // Ny gest → nullstill et eventuelt hengit ignorer-flagg fra en dra
+    // som aldri endte i et klikk.
+    window.lensIgnoreClick = false;
+  });
+
   gridEl.addEventListener('pointermove', e => {
     const rect = gridEl.getBoundingClientRect();
-    updateLens(e.clientX - rect.left, e.clientY - rect.top);
+    let cx = e.clientX - rect.left;
+    let cy = e.clientY - rect.top;
+    if (e.pointerType !== 'mouse') {
+      // Touch/penn: løft linsesentrum over fingeren så den ikke dekkes.
+      // Klamp så toppraden fortsatt forstørres når fingeren er nær toppen.
+      cy = Math.max(24, cy - TOUCH_OFFSET_Y);
+      const dx = e.clientX - gestureStartX;
+      const dy = e.clientY - gestureStartY;
+      if (dx * dx + dy * dy > DRAG_THRESHOLD * DRAG_THRESHOLD) didDrag = true;
+    }
+    updateLens(cx, cy);
   });
-  // Mus forlater grid → leave. Touch løfter fingeren → up/cancel.
-  gridEl.addEventListener('pointerleave', resetLens);
-  gridEl.addEventListener('pointerup', resetLens);
+
+  // En touch-dra skal kun posisjonere linsen, ikke plukke. Marker at det
+  // påfølgende click-eventet skal ignoreres av plukkingen (inventory.js).
+  // Linsen blir stående (ingen reset) så du rekker å sikte og deretter trykke.
+  gridEl.addEventListener('pointerup', e => {
+    if (e.pointerType !== 'mouse' && didDrag) window.lensIgnoreClick = true;
+  });
+
+  // Mus som forlater grid → nullstill. (For touch fyrer pointerleave også ved
+  // løft, men da skal linsen bli stående, så vi nullstiller kun for mus.)
+  gridEl.addEventListener('pointerleave', e => {
+    if (e.pointerType === 'mouse') resetLens();
+  });
   gridEl.addEventListener('pointercancel', resetLens);
   window.addEventListener('resize', () => { cellCenters = null; });
 })();
