@@ -1,0 +1,6 @@
+Scener
+- Basen, hvor man kan bygge ting basert på ord. Dette gjør deg sterkere på noe vis.
+- Velge sankested, man har noen muligheter. Endrer seg hver dag.
+- Samlingen, skjermen hvor man gjør selve samlingen.
+- Kamp, hvor man må slåss mot fiender.
+- Event, noe som skjer innimellom med sjeldne hendelser. Tenk wandering traders.
