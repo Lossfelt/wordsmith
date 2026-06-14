@@ -1,84 +1,87 @@
 WORDSMITH – Jakte på bokstaver
 
-Dette er et arbeidsdokument for spillkonseptet. Mye er fortsatt åpne idéer
-(markert med "kanskje" / spørsmål), ikke beslutninger.
+Dette er et arbeidsdokument for spillkonseptet. Mye er fortsatt åpne idéer (markert med "kanskje" / spørsmål), ikke beslutninger.
 
+---------------------------------------------------------------------------------------------------
 
 KJERNEKONSEPT
 - Man samler på bokstaver og bruker dem til:
-  - Forsvar: man blir angrepet av noe og bruker bokstavene til å forsvare seg.
+  - Forsvar: man blir angrepet av fiendtlige, levende ord, og bruker bokstavene til å forsvare seg.
   - Bytte dem mot noe, slik at det gir verdi å ikke bruke dem opp i kamp.
-  - Permanent gevinst til spilleren, eller noe visuelt i miljøet.
+  - Bygge noe i byen/basen sin, osm gir permanent gevinst til spilleren, og noe visuelt i byen.
+- Enspiller, browserbasert spill. Progresjon lagres lokalt.
 
 
-SCENER
+SCENER/SKJERMER
+- Start nytt spill eller fortsette gammelt spill
 - Basen, hvor man kan bygge ting basert på ord. Dette gjør deg sterkere på noe vis.
-- Velge sankested, man har noen muligheter. Endrer seg hver dag.
+- Velge sankested for letefasen. Man har tre muligheter, endrer seg hver dag.
 - Samlingen, skjermen hvor man gjør selve samlingen.
 - Kamp, hvor man må slåss mot fiender.
 - Event, noe som skjer innimellom med sjeldne hendelser. Tenk wandering traders.
+- Game over, hvis man taper.
 
+USER INTERFACE
+- Inventory av bokstavene man eier
+- Oversikt over delene av spiller (skjermene/scenene), med mulighet til å bevege seg mellom iht spillets logikk
+- Meny
 
-HVORDAN SAMLINGEN FOREGÅR
-- Kanskje bare en 2D-skjerm hvor bokstavene flyter rundt.
-- De glir over skjermen.
-- De er på samme sted på skjermen, men fader inn og ut og byttes ut etter hvert.
-- De er skjult på et vis på skjermen, så man må klikke seg rundt for å avdekke dem.
-  - I så fall fordelt etter et visst system, dvs. gruppert på en måte man kan kjenne igjen.
+-----------------------------------------------------------------------------------------
 
+STED OG VERDEN
+- Biomer
+  - Ulike biomer hvor forskjellige grupper bokstaver dominerer (endret sannsynlighetsfordeling for hvor ofte de ulike bokstavene dukker opp på brettet).
+  - Kanskje man hver "dag" kan velge mellom tre tilfeldige biomer, så man kan sikte på de bokstavene man trenger.
+- Vær og sesonger
+  - Ulikt "vær" representert gjennom måtene bokstavene skiftes ut på. F.eks. "Today is a calm day"  og så rolig utskiftning.
+    - Værtyper:
+      - Hver tidsenhet skiftes kun én bokstav på brettet ut. Dette er et ganske rolig vær. Tidsenheten kan kanskje variere, men bør trolig være raskt (feks 100 millisekunder) slik at brettet ikke oppleves for statisk.
+      - Hver bokstav på brettet har en tilfeldig time-to-live innenfor et vindu (feks 2-7 sekunder). De erstattes av nye bokstaver som også har tilfeldige TTL.
+      - Alle bokstavene på brettet skiftes ut på én gang. Dette er veldig slitsomt og kaotisk vær. Tidsenheten bør ikke være mindre enn 2 sekunder.
+  - Kanskje sesonger som påvirker hvilket vær som er vanlig.
+  - Samme vær for alle bioemene på én gitt dag, eller ulikt vær på hver av dem?
+- Natt og dag
+  - Man kan lete etter bokstaver både natt og dag, det velges samtidig som man velger biom.
+    - Lupe / fog-of-war kan være natt, mens når man ser hele grid'en hele tiden er dag.
+    - Dag: lettere å finne bokstaver (ingen fog of war), men vanskeligere fiender fordi de ser deg lettere.
+    - Natt: må bruke lupe for å finne bokstaver, men fienden er enklere.
 
-HVA MAN BRUKER BOKSTAVENE TIL
-- Bokstaver kan settes sammen til ord.
-  - Kanskje basert på Scrabble, der bokstavene har ulik verdi/kraft.
+-----------------------------------------------------------------------------------------
 
+LETEFASEN
+- Grid på 10x10 bokstaver
+- Man har X antall sekunder til letefasen.
+  - I tillegg til at tiden tikker jevnt ned, gjør det å høste en bokstav at man automatisk mister f.eks. 10 sekunder. Dette gjør at man uansett ikke greier å høste for mange bokstaver.
+- Kanskje også maks inventory-størrelse, som senere kan utvides gjennom permanente oppgraderinger i basen, eller random events.
+
+-----------------------------------------------------------------------------------------
 
 KAMP
-- Bruk bokstaver til å lage ett ord for angrep og ett for forsvar. Verdien av
-  ordene brukes til å kjempe mot motstander.
+- Bruk bokstaver til å lage ett ord for angrep og ett for forsvar. Verdien av ordene brukes til å kjempe mot motstander.
   - Evt bare ett ord som er både angrep og forsvar.
 - Kanskje sannsynlighet er inne i bildet, slik at ordenes verdi ikke er helt faste og dermed helt enten/eller om man vinner eller ikke.
-- Flere runder: avhengig av sannsynlighet dør noen av bokstavene mellom rundene. Da må man bruke gjenværende bokstaver og lage nye ord.
+- Kanskje kampen går over flere runder: avhengig av sannsynlighet dør noen av bokstavene mellom rundene. Da må man bruke gjenværende bokstaver og lage nye ord.
 - Ulike typer fiender, f.eks. spesielle ordgrupper eller ord med visse bokstaver.
   - Kanskje noen fiender skades ekstra hvis man kan lage et ord som tematisk passer mot fienden.
 
+-----------------------------------------------------------------------------------------
 
-STED OG VERDEN
-- Et slags magisk hus/tårn/slott/borg?
-  - Man beveger seg fra rom til rom og blir overrasket over hva som er bak neste dør.
-  - Plasseringen av rommene endrer seg hver natt, så man slipper å forklare vekk hvorfor spilleren ikke kan gå tilbake dit hen var.
-
-Biomer
-- Ulike biomer hvor forskjellige grupper bokstaver dominerer (endret sannsynlighetsfordeling for hvor ofte de ulike bokstavene dukker opp på brettet).
-  - Kanskje man hver "dag" kan velge mellom tre tilfeldige biomer, så man kan sikte på de bokstavene man trenger.
-
-Vær og sesonger
-- Ulikt "vær" representert gjennom måtene bokstavene skiftes ut på (én og én,
-  alle på en gang, time-to-live per bokstav, osv.). F.eks. "Today is a calm day"
-  og så rolig utskiftning.
-- Kanskje sesonger som påvirker hvilket vær som er vanlig.
+BASEN/BYGGE
 
 
-TID OG RESSURSER
-- Man har X antall sekunder til letefasen.
-- I tillegg til at tiden tikker jevnt ned, gjør det å høste en bokstav at man
-  automatisk mister f.eks. 10 sekunder. Dette gjør at man uansett ikke greier å høste for mange bokstaver.
-- Kanskje også maks inventory-størrelse, som senere kan utvides.
+-----------------------------------------------------------------------------------------
 
-
-NATT OG DAG
-- Lupe / fog-of-war kan være natt.
-- Man kan lete etter bokstaver både natt og dag, med andre forskjeller enn bare lupen:
-  - Dag: lettere å finne bokstaver (ingen fog of war), men vanskeligere fiender
-    fordi de ser deg lettere.
-  - Natt: må bruke lupe for å finne bokstaver, men fienden er enklere.
-
-
-EVENTS
+RANDOM EVENTS
 - Sjelden event hvor man treffer "wandering traders". F.eks. historiske figurer,
   forfattere, poeter (Shakespeare?). Kanskje de gir bort ord, eller selger sjeldne ord/bokstaver.
 
+-----------------------------------------------------------------------------------------
 
-HØSTING MINI-GAME (mekanikk-kandidater)
+IDÉBACKLOG (ignoreres foreløpig)
+
+- Noen bokstaver er verdt mer enn andre (gullbokstaver?). Disse er enten bedre i kamp, eller så er det kun disse som kan brukes til bygging.
+
+- Minigame for høsting av bokstaver
 
 Grid-bevegelse
 - Grid med bokstaver og X antall tomme celler. Hvert sekund flytter en tilfeldig
@@ -131,3 +134,5 @@ Mulig kombo
   Cooldown på hvor ofte det kan gjøres.
 - Noen ganger dukker det opp en gullbokstav. Den prøver å stikke av to ganger og
   må jaktes på.
+
+-----------------------------------------------------------------------------------------
