@@ -7,13 +7,8 @@ Dette er et arbeidsdokument for spillkonseptet. Mye er fortsatt åpne idéer
 KJERNEKONSEPT
 - Man samler på bokstaver og bruker dem til:
   - Forsvar: man blir angrepet av noe og bruker bokstavene til å forsvare seg.
-  - Holde seg selv i live: bokstavene gir energi på et vis.
   - Bytte dem mot noe, slik at det gir verdi å ikke bruke dem opp i kamp.
   - Permanent gevinst til spilleren, eller noe visuelt i miljøet.
-- Leter man etter enkelttegn eller etter kombinasjoner av tegn?
-- Mulig todelt spill: én fase hvor man samler, en annen hvor man bruker dem
-  (f.eks. til å beskytte seg). I sanke-fasen ser man en timer eller en
-  sannsynlighet for at neste fase begynner.
 
 
 SCENER
@@ -28,44 +23,33 @@ HVORDAN SAMLINGEN FOREGÅR
 - Kanskje bare en 2D-skjerm hvor bokstavene flyter rundt.
 - De glir over skjermen.
 - De er på samme sted på skjermen, men fader inn og ut og byttes ut etter hvert.
-- Man kan kanskje scrolle rundt omkring.
 - De er skjult på et vis på skjermen, så man må klikke seg rundt for å avdekke dem.
   - I så fall fordelt etter et visst system, dvs. gruppert på en måte man kan kjenne igjen.
-- Kanskje man har en avatar man beveger rundt som finner dem.
-- De har "liv" og beveger seg rundt, og man må fange dem (a la Pokémon).
 
 
 HVA MAN BRUKER BOKSTAVENE TIL
 - Bokstaver kan settes sammen til ord.
   - Kanskje basert på Scrabble, der bokstavene har ulik verdi/kraft.
-- Kanskje formen på bokstavene har noe å si.
-- Hvis det er tall, kan man kanskje bruke dem til noe matematisk.
-  - I så fall sanker man kanskje også symboler.
 
 
 KAMP
 - Bruk bokstaver til å lage ett ord for angrep og ett for forsvar. Verdien av
   ordene brukes til å kjempe mot motstander.
-- Kanskje sannsynlighet er inne i bildet, slik at ordenes verdi ikke er helt
-  enten/eller om man vinner eller ikke.
-- Flere runder: avhengig av sannsynlighet dør noen av bokstavene mellom
-  rundene. Da må man bruke gjenværende bokstaver og lage nye ord.
+  - Evt bare ett ord som er både angrep og forsvar.
+- Kanskje sannsynlighet er inne i bildet, slik at ordenes verdi ikke er helt faste og dermed helt enten/eller om man vinner eller ikke.
+- Flere runder: avhengig av sannsynlighet dør noen av bokstavene mellom rundene. Da må man bruke gjenværende bokstaver og lage nye ord.
 - Ulike typer fiender, f.eks. spesielle ordgrupper eller ord med visse bokstaver.
-  Kanskje noen fiender skades ekstra hvis man kan lage et ord som tematisk
-  passer mot fienden.
+  - Kanskje noen fiender skades ekstra hvis man kan lage et ord som tematisk passer mot fienden.
 
 
 STED OG VERDEN
-- Et slags magisk hus/tårn/slott/borg.
-- Man beveger seg fra rom til rom og blir overrasket over hva som er bak neste dør.
-- Plasseringen av rommene endrer seg hver natt, så man slipper å forklare vekk
-  hvorfor spilleren ikke kan gå tilbake dit hen var.
+- Et slags magisk hus/tårn/slott/borg?
+  - Man beveger seg fra rom til rom og blir overrasket over hva som er bak neste dør.
+  - Plasseringen av rommene endrer seg hver natt, så man slipper å forklare vekk hvorfor spilleren ikke kan gå tilbake dit hen var.
 
 Biomer
-- Ulike biomer hvor forskjellige grupper bokstaver dominerer (endret
-  sannsynlighetsfordeling for hvor ofte de ulike bokstavene dukker opp på brettet).
-- Kanskje man hver "dag" kan velge mellom tre tilfeldige biomer, så man kan
-  sikte på de bokstavene man trenger.
+- Ulike biomer hvor forskjellige grupper bokstaver dominerer (endret sannsynlighetsfordeling for hvor ofte de ulike bokstavene dukker opp på brettet).
+  - Kanskje man hver "dag" kan velge mellom tre tilfeldige biomer, så man kan sikte på de bokstavene man trenger.
 
 Vær og sesonger
 - Ulikt "vær" representert gjennom måtene bokstavene skiftes ut på (én og én,
@@ -77,8 +61,7 @@ Vær og sesonger
 TID OG RESSURSER
 - Man har X antall sekunder til letefasen.
 - I tillegg til at tiden tikker jevnt ned, gjør det å høste en bokstav at man
-  automatisk mister f.eks. 10 sekunder. Dette gjør at man uansett ikke greier å
-  høste for mange bokstaver.
+  automatisk mister f.eks. 10 sekunder. Dette gjør at man uansett ikke greier å høste for mange bokstaver.
 - Kanskje også maks inventory-størrelse, som senere kan utvides.
 
 
@@ -92,8 +75,7 @@ NATT OG DAG
 
 EVENTS
 - Sjelden event hvor man treffer "wandering traders". F.eks. historiske figurer,
-  forfattere, poeter (Shakespeare?). Kanskje de gir bort ord, eller selger
-  sjeldne ord/bokstaver.
+  forfattere, poeter (Shakespeare?). Kanskje de gir bort ord, eller selger sjeldne ord/bokstaver.
 
 
 HØSTING MINI-GAME (mekanikk-kandidater)
