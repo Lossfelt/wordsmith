@@ -5,9 +5,7 @@ Dette er et arbeidsdokument for spillkonseptet. Mye er fortsatt åpne idéer
 
 
 KJERNEKONSEPT
-- Man jakter på bokstaver og/eller tall.
-- Man samler på dem og bruker dem til noe.
-- Mulig bruk:
+- Man samler på bokstaver og bruker dem til:
   - Forsvar: man blir angrepet av noe og bruker bokstavene til å forsvare seg.
   - Holde seg selv i live: bokstavene gir energi på et vis.
   - Bytte dem mot noe, slik at det gir verdi å ikke bruke dem opp i kamp.
