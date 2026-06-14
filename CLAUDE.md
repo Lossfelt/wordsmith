@@ -36,7 +36,7 @@ Ingen byggsteg. Script-filer lastes i rekkefølge via `<script src="...">` i `in
 
 **Fog of war** (toggle-knapp, gul når aktiv) – alt *innenfor* lupen er helt klart, alt utenfor blir uskarpt. Implementert som **ett** `.fog-overlay`-element (barn av `#grid`) med `backdrop-filter: blur(4px)` og en sirkulær CSS-maske (`radial-gradient`) som lager et hull der lupen er. Det gir **én** GPU-blur-operasjon i stedet for blur per celle – avgjørende for flyt på mobil. `updateFog()` (i `lens.js`) flytter hullet ved å sette `--lx`/`--ly`/`--lr` på overlegget (`--lr = 0` → ingen hull, hele griddet blurres når lupen er inaktiv). Styres av `fogOfWar`-flagget og `toggleFog()`. Cellene blurres ikke lenger hver for seg; `.cell` har kun `will-change: transform`.
 
-**Plukking** – `window.pickCell(cell)` (i `inventory.js`) markerer cellen som `.picked` (tom, stiplet kant) og legger bokstaven som `.inventory-item` i `#inventory`. Alle varianter hopper over `.picked`-celler. **Mus**: klikk på cellen. **Touch**: `lens.js` kaller `pickCell(targetCell)` på `pointerup` (cellen som var siktet på), og setter `window.lensIgnoreClick` så det etterfølgende syntetiske click-eventet ikke plukker en gang til.
+**Plukking** – `window.pickCell(cell)` (i `inventory.js`) markerer cellen som `.picked` (tom, stiplet kant) og teller opp bokstaven i inventory-linjen. Inventory er en fast linje med hele alfabetet (`CHARS`); hver bokstav er grå (`.inventory-item`) til den plukkes, da blir den markert (`.inventory-item.has`) og får en teller (`.inventory-count`) under seg som viser hvor mange man har av bokstaven. Alle varianter hopper over `.picked`-celler. **Mus**: klikk på cellen. **Touch**: `lens.js` kaller `pickCell(targetCell)` på `pointerup` (cellen som var siktet på), og setter `window.lensIgnoreClick` så det etterfølgende syntetiske click-eventet ikke plukker en gang til.
 
 ## Neste steg (planlagt)
 
@@ -52,7 +52,7 @@ Plukking er grunnlaget for en mekanikk der spilleren samler bokstaver for å dan
 ## CSS-konvensjoner
 
 - Celle-tilstander: `.cell` (normal), `.cell.picked` (plukket – tom, stiplet)
-- Inventory: `.inventory` (container), `.inventory-label`, `.inventory-slots`, `.inventory-item`
+- Inventory: `.inventory` (container), `.inventory-label`, `.inventory-slots`, `.inventory-item` (én per bokstav i alfabetet), `.inventory-item.has` (plukket minst én gang), `.inventory-letter`, `.inventory-count`
 - Knapp-tilstander: `.active` (grønn for varianter, gul for fog-of-war via `.btn-fog.active`)
 - Forstørrelsesglass: `.lens-ring` (glassrand, absolutt plassert i `#grid`, vises/skjules via inline `display`)
 - Fog of war: `.fog-overlay` (backdrop-filter-blur med sirkulær maske; hull-senter/-radius via CSS-variablene `--lx`/`--ly`/`--lr`)
