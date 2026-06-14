@@ -259,23 +259,34 @@ button:hover:not(.active) {
 .inventory-slots {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  justify-content: space-between;
+  gap: 6px 4px;
   min-height: 2.5rem;
 }
 .inventory-item {
-  width: 2rem;
-  height: 2rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   font-family: 'Courier New', monospace;
+  user-select: none;
+}
+.inventory-letter {
   font-size: 1.2rem;
   font-weight: 700;
-  background: #1a1a1a;
+  line-height: 1.1;
+  color: #555; /* default: grå (ikke plukket) */
+}
+/* Plukket: bokstaven blir markert og teller vises under */
+.inventory-item.has .inventory-letter {
+  color: #fff;
+}
+.inventory-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
   color: #6f6;
-  border-radius: 3px;
-  border: 1px solid #2a2a2a;
-  user-select: none;
+  min-height: 0.75rem; /* reserver plass så linjen ikke hopper */
 }
 
 /* ---- Mobil ---- */

@@ -1,9 +1,30 @@
-// Plukking – sender bokstaven fra en celle til inventory.
+// Plukking – teller opp bokstaven fra en celle i inventory-linjen.
 // Mus: klikk på cellen. Touch: lens.js kaller window.pickCell() når fingeren
 // løftes (cellen er den som var siktet på i lupen).
 
 (function initPicking() {
   const inventoryEl = document.getElementById('inventory');
+
+  // Bygg én fast linje med hele alfabetet. Hver bokstav er grå til den plukkes.
+  const letterItems = {}; // bokstav -> { item, countEl, count }
+
+  for (const letter of CHARS) {
+    const item = document.createElement('div');
+    item.className = 'inventory-item';
+
+    const letterEl = document.createElement('div');
+    letterEl.className = 'inventory-letter';
+    letterEl.textContent = letter;
+
+    const countEl = document.createElement('div');
+    countEl.className = 'inventory-count';
+
+    item.appendChild(letterEl);
+    item.appendChild(countEl);
+    inventoryEl.appendChild(item);
+
+    letterItems[letter] = { item, countEl, count: 0 };
+  }
 
   function pickCell(cell) {
     if (!cell || cell.classList.contains('picked')) return;
@@ -13,10 +34,11 @@
     cell.textContent = '';
     cell.classList.add('picked');
 
-    const item = document.createElement('div');
-    item.className = 'inventory-item';
-    item.textContent = letter;
-    inventoryEl.appendChild(item);
+    const entry = letterItems[letter];
+    if (!entry) return;
+    entry.count += 1;
+    entry.item.classList.add('has');
+    entry.countEl.textContent = entry.count;
   }
   // Eksponeres så lens.js kan plukke den siktede cellen ved touch-løft.
   window.pickCell = pickCell;
