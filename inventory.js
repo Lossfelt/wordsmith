@@ -11,6 +11,8 @@
   for (const letter of CHARS) {
     const item = document.createElement('div');
     item.className = 'inventory-item';
+    // Vokaler havner på egen linje under konsonantene (styres i style.css).
+    if (VOWELS.includes(letter)) item.classList.add('vowel');
 
     const letterEl = document.createElement('div');
     letterEl.className = 'inventory-letter';
