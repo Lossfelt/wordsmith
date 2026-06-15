@@ -1,6 +1,138 @@
-Scener
+WORDSMITH – Jakte på bokstaver
+
+Dette er et arbeidsdokument for spillkonseptet. Mye er fortsatt åpne idéer (markert med "kanskje" / spørsmål), ikke beslutninger.
+
+---------------------------------------------------------------------------------------------------
+
+KJERNEKONSEPT
+- Man samler på bokstaver og bruker dem til:
+  - Forsvar: man blir angrepet av fiendtlige, levende ord, og bruker bokstavene til å forsvare seg.
+  - Bytte dem mot noe, slik at det gir verdi å ikke bruke dem opp i kamp.
+  - Bygge noe i byen/basen sin, osm gir permanent gevinst til spilleren, og noe visuelt i byen.
+- Enspiller, browserbasert spill. Progresjon lagres lokalt.
+
+
+SCENER/SKJERMER
+- Start nytt spill eller fortsette gammelt spill
 - Basen, hvor man kan bygge ting basert på ord. Dette gjør deg sterkere på noe vis.
-- Velge sankested, man har noen muligheter. Endrer seg hver dag.
+- Velge sankested for letefasen. Man har tre muligheter, endrer seg hver dag.
 - Samlingen, skjermen hvor man gjør selve samlingen.
 - Kamp, hvor man må slåss mot fiender.
 - Event, noe som skjer innimellom med sjeldne hendelser. Tenk wandering traders.
+- Game over, hvis man taper.
+
+USER INTERFACE
+- Inventory av bokstavene man eier
+- Oversikt over delene av spiller (skjermene/scenene), med mulighet til å bevege seg mellom iht spillets logikk
+- Meny
+
+-----------------------------------------------------------------------------------------
+
+STED OG VERDEN
+- Biomer
+  - Ulike biomer hvor forskjellige grupper bokstaver dominerer (endret sannsynlighetsfordeling for hvor ofte de ulike bokstavene dukker opp på brettet).
+  - Kanskje man hver "dag" kan velge mellom tre tilfeldige biomer, så man kan sikte på de bokstavene man trenger.
+- Vær og sesonger
+  - Ulikt "vær" representert gjennom måtene bokstavene skiftes ut på. F.eks. "Today is a calm day"  og så rolig utskiftning.
+    - Værtyper:
+      - Hver tidsenhet skiftes kun én bokstav på brettet ut. Dette er et ganske rolig vær. Tidsenheten kan kanskje variere, men bør trolig være raskt (feks 100 millisekunder) slik at brettet ikke oppleves for statisk.
+      - Hver bokstav på brettet har en tilfeldig time-to-live innenfor et vindu (feks 2-7 sekunder). De erstattes av nye bokstaver som også har tilfeldige TTL.
+      - Alle bokstavene på brettet skiftes ut på én gang. Dette er veldig slitsomt og kaotisk vær. Tidsenheten bør ikke være mindre enn 2 sekunder.
+  - Kanskje sesonger som påvirker hvilket vær som er vanlig.
+  - Samme vær for alle bioemene på én gitt dag, eller ulikt vær på hver av dem?
+- Natt og dag
+  - Man kan lete etter bokstaver både natt og dag, det velges samtidig som man velger biom.
+    - Lupe / fog-of-war kan være natt, mens når man ser hele grid'en hele tiden er dag.
+    - Dag: lettere å finne bokstaver (ingen fog of war), men vanskeligere fiender fordi de ser deg lettere.
+    - Natt: må bruke lupe for å finne bokstaver, men fienden er enklere.
+
+-----------------------------------------------------------------------------------------
+
+LETEFASEN
+- Grid på 10x10 bokstaver
+- Man har X antall sekunder til letefasen.
+  - I tillegg til at tiden tikker jevnt ned, gjør det å høste en bokstav at man automatisk mister f.eks. 10 sekunder. Dette gjør at man uansett ikke greier å høste for mange bokstaver.
+- Kanskje også maks inventory-størrelse, som senere kan utvides gjennom permanente oppgraderinger i basen, eller random events.
+
+-----------------------------------------------------------------------------------------
+
+KAMP
+- Bruk bokstaver til å lage ett ord for angrep og ett for forsvar. Verdien av ordene brukes til å kjempe mot motstander.
+  - Evt bare ett ord som er både angrep og forsvar.
+- Kanskje sannsynlighet er inne i bildet, slik at ordenes verdi ikke er helt faste og dermed helt enten/eller om man vinner eller ikke.
+- Kanskje kampen går over flere runder: avhengig av sannsynlighet dør noen av bokstavene mellom rundene. Da må man bruke gjenværende bokstaver og lage nye ord.
+- Ulike typer fiender, f.eks. spesielle ordgrupper eller ord med visse bokstaver.
+  - Kanskje noen fiender skades ekstra hvis man kan lage et ord som tematisk passer mot fienden.
+
+-----------------------------------------------------------------------------------------
+
+BASEN/BYGGE
+
+
+-----------------------------------------------------------------------------------------
+
+RANDOM EVENTS
+- Sjelden event hvor man treffer "wandering traders". F.eks. historiske figurer,
+  forfattere, poeter (Shakespeare?). Kanskje de gir bort ord, eller selger sjeldne ord/bokstaver.
+
+-----------------------------------------------------------------------------------------
+
+IDÉBACKLOG (ignoreres foreløpig)
+
+- Noen bokstaver er verdt mer enn andre (gullbokstaver?). Disse er enten bedre i kamp, eller så er det kun disse som kan brukes til bygging.
+
+- Minigame for høsting av bokstaver
+
+Grid-bevegelse
+- Grid med bokstaver og X antall tomme celler. Hvert sekund flytter en tilfeldig
+  celle seg ortogonalt inn i tomrommet. Dette skaper et nytt tomrom. Sekvensen
+  gjentar.
+- Grid med bokstaver hvor en tilfeldig bokstav byttes ut hvert sekund (?).
+- Åpent spørsmål: skal en høstet bokstav erstattes av en tilfeldig bokstav, eller
+  blir det et nytt tomrom?
+
+Match / sekvens
+- Man kan høste en bokstav når tre like står ved siden av hverandre (ortogonal
+  forbindelse).
+- Man kan høste bokstaver når de utgjør et ord (Scrabble som inspirasjon for
+  gyldige ord). Usikkert om det fungerer når bokstavene er tilfeldig plassert –
+  kanskje bruke deler av ord, eller kreve at bokstavene står inntil bokstaver som
+  høres like ut ved uttale.
+- Man har bare X antall trykk. Sekvensen må f.eks. være alfabetisk eller et
+  gyldig ord.
+
+Flytte / bytte celler
+- Flytt celler ved å bytte to naboceller. Får man tre på rad, høstes den.
+  Cooldown på hvor ofte det kan gjøres.
+- For å høste en bokstav må man dra den inn i en gyldig sekvens, ved å dra den
+  mot en annen bokstav så de bytter plass.
+- Når spilleren trykker en bokstav, trekkes like bokstaver i nærheten ett steg
+  mot den. Hvis tre møtes, høstes de.
+
+Fang / jakt
+- Når man klikker på en bokstav for å høste den, prøver den å stikke av: den
+  beveger seg mot en nabocelle, og man må klikke på naboen før den kommer frem.
+- Eller den hopper automatisk til en nabo tre ganger, og hver gang må man klikke
+  raskt på den, ellers blir den borte.
+- Forskjellige bokstaver kan hoppe ulikt (raskere/saktere, ortogonalt/diagonalt).
+- Etter trykk pulserer bokstaven, og man må trykke på den igjen på riktig
+  tidspunkt for å ta den.
+- Etter trykk prøver bokstaven å stikke av, og man må holde fingeren/musen på den
+  et par sekunder uten å miste den. Greier man det, blir den høstet.
+
+Omring / tegn
+- For å høste en celle må man omringe den ved å klikke på alle cellene rundt.
+- For å høste en celle må man tegne formen til bokstaven ved å klikke på cellene
+  rundt/på den som tegner bokstaven.
+- Når du trykker på en bokstav, markeres alle like bokstaver. Man må rekke å
+  trykke på alle for å høste den første man trykket på. Evt. må man trykke på fire
+  i ring rundt den første.
+
+Mulig kombo
+- Tre på rad ortogonalt høster.
+- Kan flytte celler ved å bytte to naboceller. Får man tre på rad, høstes den.
+  Cooldown på hvor ofte det kan gjøres.
+- Noen ganger dukker det opp en gullbokstav. Den prøver å stikke av to ganger og
+  må jaktes på.
+
+-----------------------------------------------------------------------------------------

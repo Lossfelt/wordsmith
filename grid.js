@@ -1,8 +1,12 @@
 // Initialiserer 10x10 celle-grid og eksponerer delt tilstand
 
-const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ';
-const SIZE  = 10;
-const TOTAL = SIZE * SIZE;
+const CHARS  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ';
+// Vokalene i det aktive alfabetet. Holdes ved siden av CHARS så de følges ad
+// når alfabetet byttes ut. Brukes av inventory.js til å dele inventory i
+// konsonant- og vokallinje.
+const VOWELS = 'AEIOUYÆØÅ';
+const SIZE   = 10;
+const TOTAL  = SIZE * SIZE;
 
 const cells = [];
 

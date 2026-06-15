@@ -17,6 +17,8 @@ h1 {
 /* Kontrollrad */
 .controls {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
   align-items: flex-end;
@@ -117,10 +119,18 @@ button:hover:not(.active) {
   padding: 1rem;
   border: 1px solid #333;
   border-radius: 8px;
+  /* Fyller skjermbredden på mobil, men maks ~470px (= 40px-celler) på desktop. */
+  box-sizing: border-box;
+  width: min(100%, 470px);
+  /* Forankringspunkt for den absolutt plasserte glassringen (.lens-ring). */
+  position: relative;
+  /* Hindrer at nettleseren scroller/zoomer i stedet for å gi pointermove
+     under touch – nødvendig for at fingeren skal fungere som linse. */
+  touch-action: none;
 }
 .cell {
-  width: 2.5rem;
-  height: 2.5rem;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,12 +142,88 @@ button:hover:not(.active) {
   border-radius: 3px;
   user-select: none;
   position: relative;
-  will-change: transform, filter;
+  will-change: transform;
 }
 .status {
   margin-top: 1rem;
   font-size: 0.9rem;
   color: #888;
+}
+
+/* Fog of war – ett overlegg som blurrer hele griddet i ÉN backdrop-filter-
+   operasjon (mye billigere på mobil enn blur per celle). Den sirkulære masken
+   lager et hull der lupen er, så alt under glasset står skarpt. Hull-senter
+   (--lx/--ly) og -radius (--lr) settes fra lens.js; --lr = 0 → ingen hull
+   (hele griddet blurres når lupen er inaktiv). */
+.fog-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  pointer-events: none;
+  display: none;
+  z-index: 40;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  --lx: 50%;
+  --ly: 50%;
+  --lr: 0px;
+  -webkit-mask: radial-gradient(circle at var(--lx) var(--ly),
+    transparent 0, transparent calc(var(--lr) - 10px), #000 var(--lr));
+  mask: radial-gradient(circle at var(--lx) var(--ly),
+    transparent 0, transparent calc(var(--lr) - 10px), #000 var(--lr));
+}
+
+/* Glassring – synlig kant på forstørrelsesglasset. Følger pekeren via JS
+   (left/top settes i lens.js); sentreres på punktet med translate. */
+.lens-ring {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  /* Lys, tynn rand så glasset synes mot svart bakgrunn. */
+  border: 2px solid rgba(235, 238, 245, 0.55);
+  /* Indre glans + indre skygge gir dybde; ytre skygge løfter glasset. */
+  box-shadow:
+    inset 0 0 14px rgba(255, 255, 255, 0.10),
+    inset 0 0 0 4px rgba(0, 0, 0, 0.22),
+    0 4px 18px rgba(0, 0, 0, 0.6);
+  /* Svak glans øverst til venstre. */
+  background: radial-gradient(circle at 38% 30%, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0) 46%);
+  pointer-events: none;
+  display: none;
+  z-index: 60;
+}
+
+/* Sikte – trådkors i lupesenteret, kun under touch-sikting (.aiming).
+   Linjene har åpen midte så bokstaven under er synlig. */
+.lens-ring.aiming::before,
+.lens-ring.aiming::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.lens-ring.aiming::before {
+  width: 2px;
+  height: 30px;
+  background: linear-gradient(to bottom,
+    rgba(255, 255, 255, 0.85) 0 36%,
+    transparent 36% 64%,
+    rgba(255, 255, 255, 0.85) 64% 100%);
+}
+.lens-ring.aiming::after {
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(to right,
+    rgba(255, 255, 255, 0.85) 0 36%,
+    transparent 36% 64%,
+    rgba(255, 255, 255, 0.85) 64% 100%);
+}
+
+/* Sikte – markering av cellen som plukkes når fingeren løftes. */
+.cell.lens-target {
+  box-shadow: 0 0 0 2px #fff, 0 0 12px 2px rgba(110, 255, 110, 0.6);
 }
 .btn-fog.active {
   background: #b6820a;
@@ -156,7 +242,8 @@ button:hover:not(.active) {
 /* Inventory */
 .inventory {
   margin-top: 1.5rem;
-  width: 630px; /* same visual width as grid incl. padding */
+  box-sizing: border-box;
+  width: min(100%, 630px); /* fyller skjermbredden på mobil */
   background: #000;
   border: 1px solid #333;
   border-radius: 8px;
@@ -172,21 +259,78 @@ button:hover:not(.active) {
 .inventory-slots {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  justify-content: space-between;
+  gap: 6px 2px;
   min-height: 2.5rem;
 }
+/* To linjer: konsonanter øverst, vokaler under. Items bygges i alfabetisk
+   rekkefølge (inventory.js), så vi styrer plasseringen med flex `order`:
+   konsonanter (order 1) → tvunget linjeskift (::after, order 2) → vokaler
+   (order 3). Vokalene merkes med .vowel i inventory.js (basert på VOWELS i
+   grid.js), så oppdelingen følger automatisk med endringer i alfabetet. */
 .inventory-item {
-  width: 2rem;
-  height: 2rem;
+  order: 1; /* konsonant (default) */
+}
+.inventory-slots::after {
+  content: '';
+  flex-basis: 100%;
+  height: 0;
+  order: 2; /* bryter til ny linje mellom konsonanter og vokaler */
+}
+.inventory-item.vowel {
+  order: 3;
+}
+.inventory-item {
+  width: 1.7rem; /* fast kolonnebredde så bokstavene står på linje */
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   font-family: 'Courier New', monospace;
+  user-select: none;
+}
+.inventory-letter {
   font-size: 1.2rem;
   font-weight: 700;
-  background: #1a1a1a;
+  line-height: 1.1;
+  color: #555; /* default: grå (ikke plukket) */
+}
+/* Plukket: bokstaven blir markert og teller vises under */
+.inventory-item.has .inventory-letter {
+  color: #fff;
+}
+.inventory-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
   color: #6f6;
-  border-radius: 3px;
-  border: 1px solid #2a2a2a;
-  user-select: none;
+  min-height: 0.75rem; /* reserver plass så linjen ikke hopper */
+}
+
+/* ---- Mobil ---- */
+@media (max-width: 600px) {
+  body { padding: 0.75rem; }
+  .controls { gap: 0.4rem; }
+  button {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.9rem;
+  }
+  /* Cellene krymper med skjermen – skaler skriften med, men aldri over 1.5rem
+     (= verdien grenser mot på 600px, så ingen hopp ved bruddpunktet). */
+  .cell { font-size: clamp(0.85rem, 4.3vw, 1.5rem); }
+
+  /* Popover som «bottom sheet»: fast forankret nederst, spenner skjermbredden
+     med margin. Da kan den aldri havne utenfor skjermen uansett hvilken knapp
+     den hører til, og den overlapper ikke knappene som wrapper. */
+  .popover {
+    position: fixed;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    top: auto;
+    transform: none;
+    min-width: 0;
+    width: auto;
+  }
+  .popover::after { display: none; }
 }
