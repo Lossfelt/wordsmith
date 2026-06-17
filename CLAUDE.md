@@ -15,7 +15,7 @@ Siden serveres på en dynamisk port (se terminaloutput). Forhåndsvisningspanele
 Ingen byggsteg. Script-filer lastes i rekkefølge via `<script src="...">` i `index.html` og deler global tilstand via window-scope:
 
 | Fil | Ansvar | Eksponerer |
-|---|---|---|
+| --- | --- | --- |
 | `grid.js` | Oppretter 100 `.cell`-elementer i `#grid` | `CHARS`, `SIZE`, `TOTAL`, `cells[]`, `randChar()` |
 | `lens.js` | Avgrenset forstørrelsesglass (radius + bule + glassring) via pointer events | `toggleFog()`, `fogOfWar` |
 | `modes.js` | Variant A/B/C, parametere, slider-kobling, knapper | `setMode()` |
@@ -26,6 +26,7 @@ Ingen byggsteg. Script-filer lastes i rekkefølge via `<script src="...">` i `in
 ## Nåværende funksjonalitet
 
 **Tre bytte-varianter** (velges med knapper, justeres via hover-popover):
+
 - **A** – bytter alle celler hvert N ms (default 1000)
 - **B** – bytter én tilfeldig celle hvert N ms (default 1000)
 - **C** – hver celle har individuell TTL på 1–5 sek (min/maks justerbart)
