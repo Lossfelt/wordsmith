@@ -319,6 +319,17 @@ button:hover:not(.active) {
      (= verdien grenser mot på 600px, så ingen hopp ved bruddpunktet). */
   .cell { font-size: clamp(0.85rem, 4.3vw, 1.5rem); }
 
+  /* Inventory: den faste kolonnebredden (1.7rem) gjør at de 20 konsonantene
+     ikke får plass på én linje når skjermen er smalere enn desktop, og de
+     wrapper. På mobil lar vi derfor bokstavene krympe: flex-grow fordeler
+     bredden likt innenfor hver linje, så konsonantene (20 stk.) blir tettere
+     enn vokalene (9 stk.), og begge linjene holder seg på én rad. */
+  .inventory-item {
+    width: auto;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
   /* Popover som «bottom sheet»: fast forankret nederst, spenner skjermbredden
      med margin. Da kan den aldri havne utenfor skjermen uansett hvilken knapp
      den hører til, og den overlapper ikke knappene som wrapper. */
