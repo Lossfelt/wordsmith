@@ -1,13 +1,20 @@
-// Plukking – teller opp bokstaven fra en celle i inventory-linjen.
+// Inventory – delt tilstand for bokstavene spilleren eier. Letefasen plukker
+// bokstaver hit (teller opp), og kampen (combat.js) leser og bruker dem opp.
+// Tellingene ligger i window.Inventory.counts; render() tegner letefase-linja
+// (hele alfabetet, grå til plukket) fra counts, slik at forbruk i kamp speiles
+// tilbake hit.
+//
 // Mus: klikk på cellen. Touch: lens.js kaller window.pickCell() når fingeren
 // løftes (cellen er den som var siktet på i lupen).
 
-(function initPicking() {
+(function initInventory() {
   const inventoryEl = document.getElementById('inventory');
 
-  // Bygg én fast linje med hele alfabetet. Hver bokstav er grå til den plukkes.
-  const letterItems = {}; // bokstav -> { item, countEl, count }
+  const counts    = {}; // bokstav -> antall
+  const letterEls = {}; // bokstav -> { item, countEl }
+  for (const letter of CHARS) counts[letter] = 0;
 
+  // Bygg én fast linje med hele alfabetet. Hver bokstav er grå til den plukkes.
   for (const letter of CHARS) {
     const item = document.createElement('div');
     item.className = 'inventory-item';
@@ -25,8 +32,45 @@
     item.appendChild(countEl);
     inventoryEl.appendChild(item);
 
-    letterItems[letter] = { item, countEl, count: 0 };
+    letterEls[letter] = { item, countEl };
   }
+
+  // Tegner letefase-linja fra counts. Kalles ved hver endring.
+  function render() {
+    for (const letter of CHARS) {
+      const n = counts[letter];
+      const { item, countEl } = letterEls[letter];
+      item.classList.toggle('has', n > 0);
+      countEl.textContent = n > 0 ? n : '';
+    }
+  }
+
+  // Delt API – combat.js leser/bruker, letefasen og pickCell legger til.
+  const Inventory = {
+    counts,
+    get(letter) { return counts[letter] || 0; },
+    add(letter, n = 1) {
+      if (!(letter in counts)) return;
+      counts[letter] += n;
+      render();
+    },
+    remove(letter, n = 1) {
+      if (!(letter in counts)) return;
+      counts[letter] = Math.max(0, counts[letter] - n);
+      render();
+    },
+    total() {
+      let sum = 0;
+      for (const letter of CHARS) sum += counts[letter];
+      return sum;
+    },
+    clear() {
+      for (const letter of CHARS) counts[letter] = 0;
+      render();
+    },
+    render,
+  };
+  window.Inventory = Inventory;
 
   function pickCell(cell) {
     if (!cell || cell.classList.contains('picked')) return;
@@ -36,11 +80,7 @@
     cell.textContent = '';
     cell.classList.add('picked');
 
-    const entry = letterItems[letter];
-    if (!entry) return;
-    entry.count += 1;
-    entry.item.classList.add('has');
-    entry.countEl.textContent = entry.count;
+    Inventory.add(letter);
 
     // Varsle ev. lyttere (f.eks. letefasen, som trekker fra tid pr. plukk).
     if (window.onLetterPicked) window.onLetterPicked(letter);

@@ -4,7 +4,7 @@
 
 3 [ ] - Lag en måte å skille kode og filer slik de er nå under utvikling og testing av konsept og spill, fra hvordan det skal bli når spillet er ferdig.
 
-4 [ ] - Avklar hvordan kamp skal fungere. I første omgang er det slik at hver spiller har 100 liv. Når kamp starter møter man et tilfeldig ord. Man må bruke bokstavene fra inventory til å bygge et ord. Kampen er ren sammenligning av verdien av ordene.Basert på bokstavenes verdi slik de er i scrabble. Hvis ditt ord vinner så dør bare 1-2 av bokstavene dine og du får 0-1 av fiendens bokstaver. Spilleren tar ingen skade. Hvis ditt ord taper så dør 70-80% av bokstavene i ordet ditt, og spilleren tar differansen mellom fiendens styrke og ordets verdi som skade. Ved starten av kampen kan man velge å flyte istedenfor å bygge et ord. Da etterlater man seg alle bokstavene sine og tar differansen mellom alle bokstavenes verdi og fiendens styrke i skade.
+4 [x] - Avklar hvordan kamp skal fungere. I første omgang er det slik at hver spiller har 100 liv. Når kamp starter møter man et tilfeldig ord. Man må bruke bokstavene fra inventory til å bygge et ord. Kampen er ren sammenligning av verdien av ordene.Basert på bokstavenes verdi slik de er i scrabble. Hvis ditt ord vinner så dør bare 1-2 av bokstavene dine og du får 0-1 av fiendens bokstaver. Spilleren tar ingen skade. Hvis ditt ord taper så dør 70-80% av bokstavene i ordet ditt, og spilleren tar differansen mellom fiendens styrke og ordets verdi som skade. Ved starten av kampen kan man velge å flyte istedenfor å bygge et ord. Da etterlater man seg alle bokstavene sine og tar differansen mellom alle bokstavenes verdi og fiendens styrke i skade.
 
 5 [ ] - Lag at etter hver letefase så starter det en kamp med et tilfeldig ord.
 
