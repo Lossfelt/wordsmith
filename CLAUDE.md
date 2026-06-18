@@ -19,9 +19,10 @@ Ingen byggsteg. Script-filer lastes i rekkefølge via `<script src="...">` i `in
 | `grid.js` | Oppretter 100 `.cell`-elementer i `#grid` | `CHARS`, `SIZE`, `TOTAL`, `cells[]`, `randChar()` |
 | `lens.js` | Avgrenset forstørrelsesglass (radius + bule + glassring) via pointer events | `toggleFog()`, `fogOfWar` |
 | `modes.js` | Variant A/B/C, parametere, slider-kobling, knapper | `setMode()` |
-| `inventory.js` | Plukking fra grid til inventory (mus-klikk + `pickCell` for touch) | `pickCell()` |
+| `inventory.js` | Plukking fra grid til inventory (mus-klikk + `pickCell` for touch) | `pickCell()`, kaller `window.onLetterPicked(letter)` ved vellykket plukk |
+| `letefase.js` | Tidsbegrenset letefase: start/stopp-knapp, nedtellingstimer, tidsstraff pr. plukk | setter `window.onLetterPicked` (lytter) |
 
-**Lasterekkefølge er kritisk:** `grid.js` → `lens.js` → `modes.js` → `inventory.js`
+**Lasterekkefølge er kritisk:** `grid.js` → `lens.js` → `modes.js` → `inventory.js` → `letefase.js`
 
 ## Nåværende funksjonalitet
 
@@ -37,7 +38,9 @@ Ingen byggsteg. Script-filer lastes i rekkefølge via `<script src="...">` i `in
 
 **Fog of war** (toggle-knapp, gul når aktiv) – alt *innenfor* lupen er helt klart, alt utenfor blir uskarpt. Implementert som **ett** `.fog-overlay`-element (barn av `#grid`) med `backdrop-filter: blur(4px)` og en sirkulær CSS-maske (`radial-gradient`) som lager et hull der lupen er. Det gir **én** GPU-blur-operasjon i stedet for blur per celle – avgjørende for flyt på mobil. `updateFog()` (i `lens.js`) flytter hullet ved å sette `--lx`/`--ly`/`--lr` på overlegget (`--lr = 0` → ingen hull, hele griddet blurres når lupen er inaktiv). Styres av `fogOfWar`-flagget og `toggleFog()`. Cellene blurres ikke lenger hver for seg; `.cell` har kun `will-change: transform`.
 
-**Plukking** – `window.pickCell(cell)` (i `inventory.js`) markerer cellen som `.picked` (tom, stiplet kant) og teller opp bokstaven i inventory-linjen. Inventory er en fast linje med hele alfabetet (`CHARS`); hver bokstav er grå (`.inventory-item`) til den plukkes, da blir den markert (`.inventory-item.has`) og får en teller (`.inventory-count`) under seg som viser hvor mange man har av bokstaven. Alle varianter hopper over `.picked`-celler. **Mus**: klikk på cellen. **Touch**: `lens.js` kaller `pickCell(targetCell)` på `pointerup` (cellen som var siktet på), og setter `window.lensIgnoreClick` så det etterfølgende syntetiske click-eventet ikke plukker en gang til.
+**Plukking** – `window.pickCell(cell)` (i `inventory.js`) markerer cellen som `.picked` (tom, stiplet kant) og teller opp bokstaven i inventory-linjen. Inventory er en fast linje med hele alfabetet (`CHARS`); hver bokstav er grå (`.inventory-item`) til den plukkes, da blir den markert (`.inventory-item.has`) og får en teller (`.inventory-count`) under seg som viser hvor mange man har av bokstaven. Alle varianter hopper over `.picked`-celler. **Mus**: klikk på cellen. **Touch**: `lens.js` kaller `pickCell(targetCell)` på `pointerup` (cellen som var siktet på), og setter `window.lensIgnoreClick` så det etterfølgende syntetiske click-eventet ikke plukker en gang til. Ved hvert vellykket plukk kaller `pickCell` `window.onLetterPicked(letter)` hvis en lytter er registrert (brukes av letefasen).
+
+**Letefase** (test-knapp "Start letefasen") – en tidsbegrenset fase. Når den startes skjules de andre kontrollene (variant A/B/C, fog, stopp), knappen blir "Stopp letefasen", og en nedtellingstimer (`.search-timer`, `#timer`) vises over griddet. Fasen rører ikke `modes.js`/fog – den kjører videre med oppsettet som var aktivt da man trykket start. Timeren starter på `SEARCH_SECONDS` (60) og teller ned ett sekund av gangen; hvert plukk trekker i tillegg `PICK_PENALTY` (5) sek via `window.onLetterPicked`. Når timeren når null settes den til null og fasen stoppes (TODO: gå til neste fase i stedet). Parametere øverst i `letefase.js`.
 
 ## Neste steg (planlagt)
 
@@ -57,3 +60,4 @@ Plukking er grunnlaget for en mekanikk der spilleren samler bokstaver for å dan
 - Knapp-tilstander: `.active` (grønn for varianter, gul for fog-of-war via `.btn-fog.active`)
 - Forstørrelsesglass: `.lens-ring` (glassrand, absolutt plassert i `#grid`, vises/skjules via inline `display`)
 - Fog of war: `.fog-overlay` (backdrop-filter-blur med sirkulær maske; hull-senter/-radius via CSS-variablene `--lx`/`--ly`/`--lr`)
+- Letefase: `.search-timer` (nedtelling over griddet, `.low` når ≤ 10 sek igjen)

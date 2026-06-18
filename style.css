@@ -150,6 +150,19 @@ button:hover:not(.active) {
   color: #888;
 }
 
+/* Nedtelling i letefasen – vises over griddet mens fasen kjører. */
+.search-timer {
+  font-size: 2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+  color: #6f6;
+  margin-bottom: 0.9rem;
+}
+.search-timer.low {
+  color: #e55;
+}
+
 /* Fog of war – ett overlegg som blurrer hele griddet i ÉN backdrop-filter-
    operasjon (mye billigere på mobil enn blur per celle). Den sirkulære masken
    lager et hull der lupen er, så alt under glasset står skarpt. Hull-senter

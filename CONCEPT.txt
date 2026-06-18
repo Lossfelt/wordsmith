@@ -57,12 +57,37 @@ LETEFASEN
 -----------------------------------------------------------------------------------------
 
 KAMP
+- Starter kanskje med noe tekst på skjermen et par sekunder: "A monster approaches...". Da kan man ha en annen tekst hvis det skjer en annen event, slik som random trader.
 - Bruk bokstaver til å lage ett ord for angrep og ett for forsvar. Verdien av ordene brukes til å kjempe mot motstander.
   - Evt bare ett ord som er både angrep og forsvar.
 - Kanskje sannsynlighet er inne i bildet, slik at ordenes verdi ikke er helt faste og dermed helt enten/eller om man vinner eller ikke.
 - Kanskje kampen går over flere runder: avhengig av sannsynlighet dør noen av bokstavene mellom rundene. Da må man bruke gjenværende bokstaver og lage nye ord.
 - Ulike typer fiender, f.eks. spesielle ordgrupper eller ord med visse bokstaver.
   - Kanskje noen fiender skades ekstra hvis man kan lage et ord som tematisk passer mot fienden.
+   - Krever det online AI, lokal AI, eller klarer man seg med en slags ordbok?
+  - Det fiendtlige ordet kan gjøres litt visuelt spennende ved at hver bokstav er en sprite, en liten animert pikselart feks. Kan lage en sprite pr bokstav i alfabetet, og at hver bokstav da har et "monster-element" slik som øyne, tenner, tentakkel,etc. Når de står ved siden av hverandre ser hele ordet ut som et randomisert monster.
+
+- Flykte vs ikke flykte
+  - Hvis man kan flykte, må man da etterlate et ord som rear-guard eller ikke?
+  - Hvis man kan flykte, får man da uansett skade, men mindre om man hadde tapt kampen?
+  - Kanskje flykte er at man bare etterlater seg alle bokstavene man har, uavhengig av ord, og at skaden man tar er diffen mellom fiendens styrke og den samlede summen av bokstavene man etterlot seg
+- Skal bokstavene dø automatisk, eller sjanse, eller kun hvis de taper
+- Har spilleren helse (feks 100 poeng), tre liv, eller kun ett liv
+  - Hvis man har liv så kan noen av bygningene i basen henge sammen med å gradvis helbrede skade, feks sykehus
+  - Hvis man tar skade, er det hele fiendens styrke, eller differansen mellom styrken og sitt eget ord sin styrke?
+- Kan hvilke som helst bokstaver sendes i kamp, må de ha en viss "Verdi" (feks prosent av fienden)
+- Får man noe ved å vinne, feks en av motstanderens bokstaver?
+- Bokstav mot bokstav i baner er interessant, da det krever at man bygger ord som best matcher fiendens posisjoner.
+  - Hvordan håndteres ord av ulik lengde? Skal minste ord loope? Kan det være broken hvis man har et kort, sterkt ord? Er det evt en penalty ved å loope, feks verdi=verdi-1 pr runde?
+- Skal spillet støtte ulike kampmoduser? Når man se ordet, kan man feks velge hvilken måte man vil slåss på.
+  - Skal det i så fall være alltid unlocked, noen fiender støtter noen typer kamp, eller at noen bygninger i basen unlocker gitte kampmoduser?
+
+Forslag:
+- Man må oppgi et gyldig ord for å sende det i kamp
+- Poengverdien til ordet og fienden sammenlignes, den som har størst vinner.
+- Hvis ditt ord vinner så dør bare 1-2 av bokstavene dine og du får 0-1 av fiendens bokstaver. Spilleren tar ingen skade.
+- Hvis ditt ord taper så dør 70-80% av bokstavene i ordet ditt, og spilleren tar differansen mellom fiendens styrke og ordets verdi som skade. Dette er myntet mest på helse-konseptet, men kan tilpasses til om spilleren har tre liv.
+- Flykte er at man etterlater seg alle bokstavene sine og tar differansen mellom alle bokstavenes verdi og fiendens styrke.
 
 -----------------------------------------------------------------------------------------
 

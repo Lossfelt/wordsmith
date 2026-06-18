@@ -41,6 +41,9 @@
     entry.count += 1;
     entry.item.classList.add('has');
     entry.countEl.textContent = entry.count;
+
+    // Varsle ev. lyttere (f.eks. letefasen, som trekker fra tid pr. plukk).
+    if (window.onLetterPicked) window.onLetterPicked(letter);
   }
   // Eksponeres så lens.js kan plukke den siktede cellen ved touch-løft.
   window.pickCell = pickCell;
