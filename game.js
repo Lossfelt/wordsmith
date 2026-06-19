@@ -148,6 +148,16 @@ const DEV = true;
     const panel = document.getElementById('devPanel');
     if (panel) panel.hidden = false;
 
+    // Kollaps/utvid: toggler .collapsed på panelet (CSS skjuler .dev-body).
+    const btnToggle = document.getElementById('devToggle');
+    if (panel && btnToggle) {
+      btnToggle.addEventListener('click', () => {
+        const collapsed = panel.classList.toggle('collapsed');
+        btnToggle.textContent = collapsed ? '+' : '–';
+        btnToggle.setAttribute('aria-expanded', String(!collapsed));
+      });
+    }
+
     // Scene-hopp: én knapp pr. scene, tvinger overgangen (utenfor loop-grafen).
     const devScenes = document.getElementById('devScenes');
     if (devScenes) {

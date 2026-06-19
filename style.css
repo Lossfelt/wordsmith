@@ -395,12 +395,35 @@ button:hover:not(.active) {
   padding: 0.6rem;
   max-width: min(92vw, 360px);
 }
+.dev-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
 .dev-title {
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   color: #b6820a;
-  margin-bottom: 0.4rem;
+}
+.dev-toggle {
+  padding: 0 0.45rem;
+  line-height: 1.4;
+  font-size: 0.85rem;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #bbb;
+  border-radius: 4px;
+  cursor: pointer;
+}
+/* Kollapset: skjul innholdet, behold headeren med toggle-knappen. */
+.dev-panel.collapsed .dev-body {
+  display: none;
+}
+.dev-panel.collapsed .dev-header {
+  margin-bottom: 0;
 }
 .dev-scenes {
   display: flex;
