@@ -60,6 +60,10 @@ Ingen byggsteg. Script-filer lastes i rekkefølge via `<script src="...">` i `in
 
 Kamp (oppgave 4), ordbok/validering (oppgave 6a), letefase → kamp (oppgave 5) og scene-/spill-loopen (oppgave 2) finnes nå. `game.js` ruter hele loopen `start → base → sankested → samling → kamp → base` med dag-telling, ny-dag-grid og game over; testkontrollene ligger i et `DEV`-styrt dev-panel (lett skive av oppgave 3). Gjenstår: full dev/ferdig-separasjon med `?dev=1` (oppgave 3), kampmoduser (oppgave 7), vanskelighetsavhengig bokstavdød (oppgave 8), språk NO/EN + grid-alfabet + engelsk ordbok (oppgave 9 / 6b), fiendevalg på verdi (oppgave 10) og sikte-på-bokstav (oppgave 11). Bevisste stubber som skal fylles ut: base-bygging, event-gameplay, sankested-forskjeller (biom/vær/natt-dag) og "fortsett gammelt spill" (persistens).
 
+## Lagring (persistens)
+
+**Bruk `localStorage` i hele appen** for all persistert tilstand (ikke `sessionStorage`) – tilstand skal overleve på tvers av økter, ikke bare per fane. Foreløpig eneste bruk: dev-panelets kollaps-tilstand (`devPanelCollapsed`) i `game.js`. Når «fortsett gammelt spill»/spillpersistens fylles ut senere, skal det også bygge på `localStorage`.
+
 ## Legge til en ny variant
 
 1. Legg til `btn-wrap`-blokk med knapp og popover i `index.html`
