@@ -6,7 +6,7 @@
 
 4 [x] - Avklar hvordan kamp skal fungere. I første omgang er det slik at hver spiller har 100 liv. Når kamp starter møter man et tilfeldig ord. Man må bruke bokstavene fra inventory til å bygge et ord. Kampen er ren sammenligning av verdien av ordene.Basert på bokstavenes verdi slik de er i scrabble. Hvis ditt ord vinner så dør bare 1-2 av bokstavene dine og du får 0-1 av fiendens bokstaver. Spilleren tar ingen skade. Hvis ditt ord taper så dør 70-80% av bokstavene i ordet ditt, og spilleren tar differansen mellom fiendens styrke og ordets verdi som skade. Ved starten av kampen kan man velge å flyte istedenfor å bygge et ord. Da etterlater man seg alle bokstavene sine og tar differansen mellom alle bokstavenes verdi og fiendens styrke i skade.
 
-5 [ ] - Lag at etter hver letefase så starter det en kamp med et tilfeldig ord.
+5 [x] - Lag at etter hver letefase så starter det en kamp med et tilfeldig ord. (Simulering av endelig scene-flyt: kun naturlig slutt på letefasen utløser kamp; manuell stopp avbryter uten kamp. Koblingen er window.onSearchEnded som scene-loopen i oppgave 2 overtar.)
 
 6 [x] - (6a) Bygg inn fiender med ekte ord fra en ordbok. Ordboka er en egen norsk .txt-fil i repoet (ett ord per linje), hentes ved oppstart. Fiender velges fra HELE ordboka via en konfigurerbar utvelgelseslogikk - i første omgang min/maks ordlengde, designet slik at den senere kan utvides (f.eks. krav til bokstavtyper, og boss-fiender som er veldig lange ord). For testing må man kunne velge min-maks lengde på fiendens ord. Ordvalidering: spillerens bygde ord må være et gyldig ord i ordboka (streng validering) for å kunne angripe. Norsk-only inntil oppgave 9 (språk/engelsk).
 
@@ -15,3 +15,7 @@
 8 [ ] - Hvor mange av dine bokstaver som dør bør være avhengig av hvor vanskelig kampen var. Hvis spillerens ord var overveldende sterkere enn fienden så dør færre eller ingen bokstaver. Hvis styrkeforholdet var jevnere så kan flere dø.
 
 9 [ ] - (6b) Språkvalg NO/EN for hele siden (i18n). Hele UI-et skal kunne vises på norsk eller engelsk. Språkvalget skal også bytte grid-alfabetet (engelsk uten ÆØÅ, norsk med) og hvilken ordbok som brukes (legg til engelsk .txt-fil). Var språk-halvdelen «6b» av opprinnelig oppgave 6, skilt ut hit. Gjøres naturlig sammen med scene-arkitekturen (oppgave 2), siden språk velges før man starter spillet.
+
+10 [ ] - Valg av fiende bør se på både lengden på fiendeordet, men også verdien av bokstavene det utgjør.
+
+11 [ ] - Avansert kampfunksjon: man kan "sikte" på en bokstav man vil ha fra fiendeordet. Det gjør kampen vanskelgere (legger til noen poeng til fiendens verdi), men øker sannsynligheten for at man får den bokstaven hvis man vinner kampen.

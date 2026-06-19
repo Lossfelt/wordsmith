@@ -42,8 +42,7 @@ const PICK_PENALTY   = 5;  // sekunder som trekkes fra pr. plukket bokstav
       if (timeLeft <= 0) {
         timeLeft = 0;
         renderTimer();
-        // TODO: når neste fase finnes, start den her i stedet for å stoppe.
-        stopSearch();
+        endSearch();
         return;
       }
       renderTimer();
@@ -61,6 +60,15 @@ const PICK_PENALTY   = 5;  // sekunder som trekkes fra pr. plukket bokstav
     timerEl.style.display = 'none';
   }
 
+  // Naturlig slutt (timeren nådde 0): rydd UI og gå videre til neste fase.
+  // Koblingen til kamp er en simulering (oppgave 5) som scene-loopen (oppgave 2)
+  // overtar – konsumenten setter window.onSearchEnded. Manuell stopp bruker
+  // stopSearch() direkte og utløser dermed ingen kamp.
+  function endSearch() {
+    stopSearch();
+    if (typeof window.onSearchEnded === 'function') window.onSearchEnded();
+  }
+
   // Trekk fra tid når en bokstav plukkes. Lander vi på/under null, settes
   // timeren til null og letefasen stoppes.
   window.onLetterPicked = function () {
@@ -69,7 +77,7 @@ const PICK_PENALTY   = 5;  // sekunder som trekkes fra pr. plukket bokstav
     if (timeLeft <= 0) {
       timeLeft = 0;
       renderTimer();
-      stopSearch();
+      endSearch();
       return;
     }
     renderTimer();

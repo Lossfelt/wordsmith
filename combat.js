@@ -327,10 +327,8 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
     renderPool();
   });
 
-  // Midlertidig test-knapp (til oppgave 5 kobler letefase -> kamp). Fienden
-  // trekkes fra ordboka via Dict.randomEnemy med min/maks-lengde fra test-
-  // kontrollene. Knappen er deaktivert til ordboka er lastet (Dict.ready).
-  const btnTest = document.getElementById('btnTestCombat');
+  // Fiendelengde leses fra test-kontrollene (#enemyMinLen/#enemyMaxLen).
+  // Midlertidig dev-stillas til ekte spilllogikk styrer lengden.
   const minLenEl = document.getElementById('enemyMinLen');
   const maxLenEl = document.getElementById('enemyMaxLen');
 
@@ -342,6 +340,30 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
     return { minLen: lo, maxLen: hi };
   }
 
+  // Start kamp mot et tilfeldig fiendeord fra ordboka. Brukes av både
+  // "Test kamp"-knappen og letefase-overgangen. Returnerer true hvis kamp startet.
+  function startRandomCombat() {
+    if (!Dict.ready) {
+      console.warn('startRandomCombat: ordboka er ikke lastet ennå.');
+      return false;
+    }
+    const enemyWord = Dict.randomEnemy(readLenRange());
+    if (!enemyWord) {
+      alert('Fant ingen fiendeord i valgt lengdeintervall.');
+      return false;
+    }
+    startCombat(enemyWord);
+    return true;
+  }
+  window.startRandomCombat = startRandomCombat;
+
+  // Simulering (oppgave 5): naturlig slutt på letefasen går rett til kamp.
+  // Midlertidig kobling – scene-/spill-loopen (oppgave 2) overtar ved å sette
+  // window.onSearchEnded selv. letefase.js kaller hooken ved fase-slutt.
+  window.onSearchEnded = startRandomCombat;
+
+  // Midlertidig "Test kamp"-knapp (dev-stillas). Deaktivert til ordboka er lastet.
+  const btnTest = document.getElementById('btnTestCombat');
   if (btnTest) {
     const baseLabel = btnTest.textContent;
     btnTest.disabled = true;
@@ -350,14 +372,6 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
       btnTest.disabled = false;
       btnTest.textContent = baseLabel;
     });
-    btnTest.addEventListener('click', () => {
-      if (!Dict.ready) return;
-      const enemyWord = Dict.randomEnemy(readLenRange());
-      if (!enemyWord) {
-        alert('Fant ingen fiendeord i valgt lengdeintervall.');
-        return;
-      }
-      startCombat(enemyWord);
-    });
+    btnTest.addEventListener('click', startRandomCombat);
   }
 })();
