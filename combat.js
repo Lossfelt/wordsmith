@@ -42,6 +42,7 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
   const wordEl          = document.getElementById('combatWord');
   const wordValueEl     = document.getElementById('wordValue');
   const poolEl          = document.getElementById('combatPool');
+  const sortEl          = document.getElementById('combatSort');
   const btnAttack       = document.getElementById('btnAttack');
   const btnFlee         = document.getElementById('btnFlee');
   const resultEl        = document.getElementById('combatResult');
@@ -55,6 +56,8 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
   let pool     = {};     // arbeidskopi: bokstav -> tilgjengelig antall
   let built    = [];     // bokstavene i ordet du bygger (i rekkefølge)
   let resolved = false;  // true etter angrep/flykt – bygging er da låst
+  let sortMode = 'alpha';// pool-sortering: 'alpha' | 'value' | 'split'
+  let roster   = [];     // bokstaver som vises i poolen (eid ved start + vunnet)
 
   function randInt(min, max) { // inklusiv begge ender
     return min + Math.floor(Math.random() * (max - min + 1));
@@ -79,13 +82,37 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
 
   function renderPool() {
     poolEl.innerHTML = '';
+    // Splitt-modus bryter konsonanter/vokaler på to linjer via flex-order (CSS).
+    poolEl.classList.toggle('split', sortMode === 'split');
+
+    // Behold alle bokstaver som har vært tilgjengelige i kampen (eid ved start
+    // eller vunnet) i rosteret, så en brikke ikke forsvinner når antallet når
+    // 0 – den gråes ut i stedet. Rosteret vokser, men tømmes aldri her.
     for (const letter of CHARS) {
+      if ((pool[letter] || 0) > 0 && !roster.includes(letter)) roster.push(letter);
+    }
+
+    // CHARS-rekkefølgen er alfabetet (Æ/Ø/Å sist). 'alpha'/'split' følger den;
+    // 'value' sorterer synkende på Scrabble-verdi med alfabetisk som tie-break.
+    const alphaIdx = l => CHARS.indexOf(l);
+    const letters = [...roster];
+    if (sortMode === 'value') {
+      letters.sort((a, b) => letterValue(b) - letterValue(a) || alphaIdx(a) - alphaIdx(b));
+    } else {
+      letters.sort((a, b) => alphaIdx(a) - alphaIdx(b));
+    }
+
+    for (const letter of letters) {
       const n = pool[letter] || 0;
-      if (n <= 0) continue;
       const tile = makeTile(letter, n);
-      // Etter resolusjon vises poolen kun som oppdatert status (låst).
-      if (resolved) tile.disabled = true;
-      else tile.addEventListener('click', () => addToWord(letter));
+      if (VOWELS.includes(letter)) tile.classList.add('vowel'); // brukes kun i splitt-modus
+      // Tom (n=0) eller etter resolusjon: brikken låses. Tom gråes ut.
+      if (n <= 0 || resolved) {
+        tile.disabled = true;
+        if (n <= 0) tile.classList.add('depleted');
+      } else {
+        tile.addEventListener('click', () => addToWord(letter));
+      }
       poolEl.appendChild(tile);
     }
   }
@@ -241,6 +268,7 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
     enemy    = [...word];
     strength = wordValue(enemy);
     resolved = false;
+    roster   = [];
 
     syncPool();
     built = [];
@@ -266,6 +294,15 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
   btnBack.addEventListener('click', () => {
     Inventory.render();
     showScene('search');
+  });
+
+  // Sortering av poolen. Beholdes mellom kamper.
+  sortEl.addEventListener('click', e => {
+    const btn = e.target.closest('.combat-sort-btn');
+    if (!btn) return;
+    sortMode = btn.dataset.sort;
+    [...sortEl.children].forEach(b => b.classList.toggle('active', b === btn));
+    renderPool();
   });
 
   // Midlertidig test-knapp (til oppgave 5 kobler letefase -> kamp).
