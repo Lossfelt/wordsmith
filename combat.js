@@ -315,7 +315,10 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
   btnFlee.addEventListener('click', flee);
   btnBack.addEventListener('click', () => {
     Inventory.render();
-    showScene('search');
+    // Scene-loopen (game.js) eier hva som skjer etter kamp: game over ved død,
+    // ellers tilbake til basen. Fallback til search hvis ingen seam er satt.
+    if (typeof window.onCombatExit === 'function') window.onCombatExit();
+    else showScene('search');
   });
 
   // Sortering av poolen. Beholdes mellom kamper.
@@ -357,21 +360,7 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
   }
   window.startRandomCombat = startRandomCombat;
 
-  // Simulering (oppgave 5): naturlig slutt på letefasen går rett til kamp.
-  // Midlertidig kobling – scene-/spill-loopen (oppgave 2) overtar ved å sette
-  // window.onSearchEnded selv. letefase.js kaller hooken ved fase-slutt.
-  window.onSearchEnded = startRandomCombat;
-
-  // Midlertidig "Test kamp"-knapp (dev-stillas). Deaktivert til ordboka er lastet.
-  const btnTest = document.getElementById('btnTestCombat');
-  if (btnTest) {
-    const baseLabel = btnTest.textContent;
-    btnTest.disabled = true;
-    btnTest.textContent = 'Laster ordbok…';
-    Dict.onReady(() => {
-      btnTest.disabled = false;
-      btnTest.textContent = baseLabel;
-    });
-    btnTest.addEventListener('click', startRandomCombat);
-  }
+  // Seamen window.onSearchEnded (letefase → kamp) settes nå av game.js, ikke her.
+  // Dev-panelets "Test kamp"-knapp wires også i game.js. combat.js eksponerer
+  // startRandomCombat/startCombat/readLenRange og lar scene-loopen styre flyten.
 })();

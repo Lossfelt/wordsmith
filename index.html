@@ -9,8 +9,35 @@
 </head>
 <body>
 
+  <!-- Startskjerm: nytt spill eller fortsett (fortsett er en stubb). Hjem for
+       språkvalg senere (oppgave 9). -->
+  <div id="scene-start" class="scene" hidden>
+    <h1 class="title">Wordsmith</h1>
+    <p class="scene-lead">Jakt på bokstaver, bygg ord, slå fiender.</p>
+    <div class="scene-actions">
+      <button id="btnNewGame" class="btn-primary">Start nytt spill</button>
+      <button id="btnContinue" disabled>Fortsett (kommer senere)</button>
+    </div>
+  </div>
+
+  <!-- Basen: hjem mellom dagene. Bygging kommer senere; herfra drar man ut. -->
+  <div id="scene-base" class="scene" hidden>
+    <h1>Basen</h1>
+    <p class="scene-day">Dag <span id="baseDay">1</span></p>
+    <div class="scene-placeholder">Bygg (kommer senere)</div>
+    <div class="scene-actions">
+      <button id="btnGoSite" class="btn-primary">Dra ut og let</button>
+    </div>
+  </div>
+
+  <!-- Velg sankested: tre stubber som rulles hver dag (biom/vær kommer senere). -->
+  <div id="scene-site" class="scene" hidden>
+    <h1>Velg sankested</h1>
+    <div class="site-options" id="siteOptions"></div>
+  </div>
+
   <!-- Letefase-scenen: grid, kontroller og inventory -->
-  <div id="scene-search" class="scene">
+  <div id="scene-search" class="scene" hidden>
     <br><br><br>
     <h1>10 x 10 tegn-grid</h1>
 
@@ -60,13 +87,6 @@
       <button id="btnStop">Stopp</button>
       <button id="btnFog" class="btn-fog">Fog of war</button>
       <button id="btnSearch" class="btn-search">Start letefasen</button>
-      <span class="enemy-len-test">
-        Fiendeord-lengde
-        <input type="number" id="enemyMinLen" min="2" max="20" value="3">
-        –
-        <input type="number" id="enemyMaxLen" min="2" max="20" value="6">
-      </span>
-      <button id="btnTestCombat">Test kamp</button>
     </div>
 
     <div class="search-timer" id="timer" style="display:none"></div>
@@ -122,7 +142,42 @@
     </div>
   </div>
 
-  <!-- Lastes i rekkefølge: grid → lens → modes → inventory → scenes → dict → combat → letefase -->
+  <!-- Event-scenen: sjelden hendelse (wandering trader e.l.). Stubb; nåbar fra dev-panel. -->
+  <div id="scene-event" class="scene" hidden>
+    <h1>Event</h1>
+    <p class="scene-placeholder">Event (kommer senere)</p>
+    <div class="scene-actions">
+      <button id="btnEventContinue" class="btn-primary">Fortsett</button>
+    </div>
+  </div>
+
+  <!-- Game over: vises når helsa når 0. -->
+  <div id="scene-gameover" class="scene" hidden>
+    <h1>Du tapte</h1>
+    <p class="scene-day">Du kom til dag <span id="gameoverDay">1</span>.</p>
+    <div class="scene-actions">
+      <button id="btnToStart" class="btn-primary">Til startskjerm</button>
+    </div>
+  </div>
+
+  <!-- Dev-panel (oppgave 3, lett skive): scene-hopp + testkontroller. Vises kun
+       når DEV i game.js er på. Fiendelengde-feltene beholder id-ene combat.js
+       slår opp (#enemyMinLen/#enemyMaxLen). -->
+  <div class="dev-panel" id="devPanel" hidden>
+    <div class="dev-title">Dev</div>
+    <div class="dev-scenes" id="devScenes"></div>
+    <div class="dev-row">
+      <span class="enemy-len-test">
+        Fiendeord-lengde
+        <input type="number" id="enemyMinLen" min="2" max="20" value="3">
+        –
+        <input type="number" id="enemyMaxLen" min="2" max="20" value="6">
+      </span>
+      <button id="btnTestCombat">Test kamp</button>
+    </div>
+  </div>
+
+  <!-- Lastes i rekkefølge: grid → lens → modes → inventory → scenes → dict → combat → letefase → game -->
   <script src="grid.js"></script>
   <script src="lens.js"></script>
   <script src="modes.js"></script>
@@ -131,5 +186,6 @@
   <script src="dict.js"></script>
   <script src="combat.js"></script>
   <script src="letefase.js"></script>
+  <script src="game.js"></script>
 </body>
 </html>

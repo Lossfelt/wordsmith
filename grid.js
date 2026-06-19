@@ -24,3 +24,14 @@ function randChar() {
     cells.push(c);
   }
 })();
+
+// Nullstiller griddet til en ny dag: ny tilfeldig bokstav i hver celle og fjern
+// .picked. Inventory røres IKKE her – bokstaver beholdes mellom dager; kun ved
+// nytt spill nullstilles inventaret (game.js). Cellene flyttes ikke, så lupens
+// celle-sentre (lens.js) holder seg gyldige.
+function resetGrid() {
+  for (const c of cells) {
+    c.classList.remove('picked');
+    c.textContent = randChar();
+  }
+}

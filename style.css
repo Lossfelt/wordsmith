@@ -330,6 +330,102 @@ button:hover:not(.active) {
 }
 .scene[hidden] { display: none; }
 
+/* Skjelett-scenene (start/base/site/event/gameover): enkel, sentrert tekst og
+   knapper. Gameplay-innhold (bygging, event, sankested-forskjeller) er stubber. */
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.6rem;
+}
+.scene-lead {
+  color: #aaa;
+  margin: 0 0 1.5rem;
+}
+.scene-day {
+  color: #888;
+  font-size: 1rem;
+  margin: 0 0 1.5rem;
+}
+.scene-day span { color: #6f6; font-weight: 700; }
+.scene-placeholder {
+  color: #555;
+  border: 1px dashed #333;
+  border-radius: 8px;
+  padding: 1.4rem 2rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+.scene-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+}
+.scene-actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.btn-primary {
+  background: #2a6;
+  border-color: #2a6;
+  color: #000;
+  font-weight: 600;
+}
+.btn-primary:hover:not(:disabled) { background: #38c47e; }
+
+/* Sankested-valg: tre stablede knapper. */
+.site-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: min(100%, 320px);
+}
+.site-option { width: 100%; }
+
+/* Dev-panel (oppgave 3, lett skive) – fast i hjørnet, vises kun når DEV. */
+.dev-panel {
+  position: fixed;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 200;
+  background: rgba(20, 20, 24, 0.95);
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 0.6rem;
+  max-width: min(92vw, 360px);
+}
+.dev-title {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #b6820a;
+  margin-bottom: 0.4rem;
+}
+.dev-scenes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+.dev-scene-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.72rem;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #bbb;
+}
+.dev-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.dev-panel button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 /* ---- Kamp ---- */
 .combat-health {
   display: flex;

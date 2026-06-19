@@ -1,6 +1,6 @@
 1 [x] - Implementer letefasen, samt en test-knapp som aktiverer den. Når man trykker på "Start letefasen" så fjernes de andre knappene midlertidig (mode-selection, fog-of-war, stop) og "Start letefasen" endrer navn til "Stopp letefasen". Letefasen starter med de mode/fog-innstillingene som var aktive i det man trykket start. Når letefasen starter så ser man øverst over grid en timer som tikker ned. Den starter på 60 sekunder og teller ned mot null. Når man når null starter neste fase, men frem til den er implementert så bare stopper letefasen. Hver gang man plukker en bokstav så reduseres i tillegg timeren med 5 sekunder (hvis det gjør at man når null eller kommer under null så settes bare timeren til null og letefasen stopper).
 
-2 [ ] - Lag arkitekturen for hvordan spillet skal bli basert på KJERNEKONSEPT, SCENER/SKJERMER og USER INTERFACE fra ./concept.txt
+2 [x] - Lag arkitekturen for hvordan spillet skal bli basert på KJERNEKONSEPT, SCENER/SKJERMER og USER INTERFACE fra ./concept.txt (game.js: window.Game-router + TRANSITIONS, loop start→base→sankested→samling→kamp→base med dag-telling, resetGrid pr. dag, game over-ruting, seams onSearchEnded/onCombatExit. Sju scener i index.html. base-bygging/event/sankested-forskjeller/"fortsett" er bevisste stubber. Lett dev-seam (skive av oppgave 3): DEV-flagg + dev-panel med scene-hopp og flyttede testkontroller.)
 
 3 [ ] - Lag en måte å skille kode og filer slik de er nå under utvikling og testing av konsept og spill, fra hvordan det skal bli når spillet er ferdig.
 
