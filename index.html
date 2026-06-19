@@ -60,6 +60,12 @@
       <button id="btnStop">Stopp</button>
       <button id="btnFog" class="btn-fog">Fog of war</button>
       <button id="btnSearch" class="btn-search">Start letefasen</button>
+      <span class="enemy-len-test">
+        Fiendeord-lengde
+        <input type="number" id="enemyMinLen" min="2" max="20" value="3">
+        –
+        <input type="number" id="enemyMaxLen" min="2" max="20" value="6">
+      </span>
       <button id="btnTestCombat">Test kamp</button>
     </div>
 
@@ -107,6 +113,8 @@
       <button id="btnFlee">Flykt</button>
     </div>
 
+    <div class="combat-invalid" id="combatInvalid" hidden></div>
+
     <div class="combat-result" id="combatResult" hidden>
       <div class="combat-result-text" id="combatResultText"></div>
       <div class="combat-result-changes" id="combatResultChanges"></div>
@@ -114,12 +122,13 @@
     </div>
   </div>
 
-  <!-- Lastes i rekkefølge: grid → lens → modes → inventory → scenes → combat → letefase -->
+  <!-- Lastes i rekkefølge: grid → lens → modes → inventory → scenes → dict → combat → letefase -->
   <script src="grid.js"></script>
   <script src="lens.js"></script>
   <script src="modes.js"></script>
   <script src="inventory.js"></script>
   <script src="scenes.js"></script>
+  <script src="dict.js"></script>
   <script src="combat.js"></script>
   <script src="letefase.js"></script>
 </body>

@@ -513,6 +513,34 @@ button:hover:not(.active) {
 }
 #btnFlee:disabled { opacity: 0.5; cursor: default; }
 
+/* Inline-melding når det bygde ordet ikke er gyldig (streng validering). */
+.combat-invalid {
+  margin-top: 0.8rem;
+  color: #e55;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Test-kontroll for fiendeordlengde (midlertidig, til oppgave 5/spilllogikk). */
+.enemy-len-test {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: #aaa;
+}
+.enemy-len-test input {
+  width: 3.2rem;
+  padding: 0.3rem 0.4rem;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #eee;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
 .combat-result {
   margin-top: 1.5rem;
   text-align: center;

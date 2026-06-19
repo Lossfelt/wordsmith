@@ -8,6 +8,10 @@
 
 5 [ ] - Lag at etter hver letefase så starter det en kamp med et tilfeldig ord.
 
-6 [ ] - Bygg inn fiender. Krever ordbok (norsk og engelsk, bygg inn støtte for at hele siden vises på norsk eller engelsk). For testing må man ha mulighet til å velge min-max lengde på fiendens ord.
+6 [x] - (6a) Bygg inn fiender med ekte ord fra en ordbok. Ordboka er en egen norsk .txt-fil i repoet (ett ord per linje), hentes ved oppstart. Fiender velges fra HELE ordboka via en konfigurerbar utvelgelseslogikk - i første omgang min/maks ordlengde, designet slik at den senere kan utvides (f.eks. krav til bokstavtyper, og boss-fiender som er veldig lange ord). For testing må man kunne velge min-maks lengde på fiendens ord. Ordvalidering: spillerens bygde ord må være et gyldig ord i ordboka (streng validering) for å kunne angripe. Norsk-only inntil oppgave 9 (språk/engelsk).
 
 7 [ ] - Lag knapper for å velge ulike kamp-moduser (basert på ulike regler for kampresolusjon), samt bygg inn reglene for kamp-resolusjon.
+
+8 [ ] - Hvor mange av dine bokstaver som dør bør være avhengig av hvor vanskelig kampen var. Hvis spillerens ord var overveldende sterkere enn fienden så dør færre eller ingen bokstaver. Hvis styrkeforholdet var jevnere så kan flere dø.
+
+9 [ ] - (6b) Språkvalg NO/EN for hele siden (i18n). Hele UI-et skal kunne vises på norsk eller engelsk. Språkvalget skal også bytte grid-alfabetet (engelsk uten ÆØÅ, norsk med) og hvilken ordbok som brukes (legg til engelsk .txt-fil). Var språk-halvdelen «6b» av opprinnelig oppgave 6, skilt ut hit. Gjøres naturlig sammen med scene-arkitekturen (oppgave 2), siden språk velges før man starter spillet.

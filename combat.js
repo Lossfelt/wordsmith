@@ -12,7 +12,7 @@
 //
 // Bygging bruker en arbeidskopi av inventaret (`pool`); ekte Inventory røres
 // først ved resolusjon (kun døde bokstaver fjernes, ev. fiendebokstav legges
-// til). TODO (oppgave 6): valider at bygget ord er et gyldig ord i ordboka.
+// til). Det bygde ordet valideres strengt mot ordboka (window.Dict) før angrep.
 
 // --- Parametere ---
 // Scrabble-verdier, norsk sett (Norsk Scrabbleforbund). Q/X/Z er ikke i det
@@ -22,9 +22,6 @@ const LETTER_VALUES = {
   N: 1, O: 2, P: 4, Q: 10, R: 1, S: 1, T: 1, U: 4, V: 4, W: 8, X: 8, Y: 6, Z: 10,
   Æ: 6, Ø: 5, Å: 4,
 };
-// Midlertidige fiendeord til oppgave 6 leverer en ekte ordbok.
-const TEST_WORDS = ['KATT', 'HUND', 'DRAGE', 'TROLL', 'ORM', 'ULV', 'BJØRN', 'REV'];
-
 // --- Spillertilstand ---
 window.player = { health: 100, maxHealth: 100 };
 
@@ -45,6 +42,7 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
   const sortEl          = document.getElementById('combatSort');
   const btnAttack       = document.getElementById('btnAttack');
   const btnFlee         = document.getElementById('btnFlee');
+  const invalidEl       = document.getElementById('combatInvalid');
   const resultEl        = document.getElementById('combatResult');
   const resultTextEl    = document.getElementById('combatResultText');
   const changesEl       = document.getElementById('combatResultChanges');
@@ -128,12 +126,24 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
     btnAttack.disabled = built.length === 0;
   }
 
+  // Inline-melding når ordet ikke er gyldig (vises ved angrepsforsøk, skjules
+  // så snart ordet endres). Påvirker ikke poolen eller resolusjonen.
+  function showInvalid(msg) {
+    if (!invalidEl) return;
+    invalidEl.textContent = msg;
+    invalidEl.hidden = false;
+  }
+  function hideInvalid() {
+    if (invalidEl) invalidEl.hidden = true;
+  }
+
   // --- Bygging ---
   function addToWord(letter) {
     if (resolved) return;
     if ((pool[letter] || 0) <= 0) return;
     pool[letter] -= 1;
     built.push(letter);
+    hideInvalid();
     renderPool();
     renderWord();
   }
@@ -142,6 +152,7 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
     if (resolved) return;
     const letter = built.splice(index, 1)[0];
     pool[letter] = (pool[letter] || 0) + 1;
+    hideInvalid();
     renderPool();
     renderWord();
   }
@@ -188,6 +199,16 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
   // --- Resolusjon ---
   function attack() {
     if (!built.length) return;
+
+    // Streng validering: ordet må være et gyldig ord i ordboka for å angripe.
+    // Ved ugyldig ord blokkeres angrepet, ordet beholdes, og en melding vises.
+    const word = built.join('');
+    if (!Dict.isValid(word)) {
+      showInvalid(`«${word}» er ikke et gyldig ord.`);
+      return;
+    }
+    hideInvalid();
+
     const playerVal = wordValue(built);
     const win = playerVal >= strength;
 
@@ -283,6 +304,7 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
 
     btnFlee.disabled = false;
     resultEl.hidden  = true;
+    hideInvalid();
 
     showScene('combat');
   }
@@ -305,11 +327,37 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
     renderPool();
   });
 
-  // Midlertidig test-knapp (til oppgave 5 kobler letefase -> kamp).
+  // Midlertidig test-knapp (til oppgave 5 kobler letefase -> kamp). Fienden
+  // trekkes fra ordboka via Dict.randomEnemy med min/maks-lengde fra test-
+  // kontrollene. Knappen er deaktivert til ordboka er lastet (Dict.ready).
   const btnTest = document.getElementById('btnTestCombat');
+  const minLenEl = document.getElementById('enemyMinLen');
+  const maxLenEl = document.getElementById('enemyMaxLen');
+
+  function readLenRange() {
+    let lo = parseInt(minLenEl && minLenEl.value, 10);
+    let hi = parseInt(maxLenEl && maxLenEl.value, 10);
+    if (!Number.isFinite(lo)) lo = Dict.minLength;
+    if (!Number.isFinite(hi)) hi = Dict.maxLength;
+    return { minLen: lo, maxLen: hi };
+  }
+
   if (btnTest) {
+    const baseLabel = btnTest.textContent;
+    btnTest.disabled = true;
+    btnTest.textContent = 'Laster ordbok…';
+    Dict.onReady(() => {
+      btnTest.disabled = false;
+      btnTest.textContent = baseLabel;
+    });
     btnTest.addEventListener('click', () => {
-      startCombat(TEST_WORDS[Math.floor(Math.random() * TEST_WORDS.length)]);
+      if (!Dict.ready) return;
+      const enemyWord = Dict.randomEnemy(readLenRange());
+      if (!enemyWord) {
+        alert('Fant ingen fiendeord i valgt lengdeintervall.');
+        return;
+      }
+      startCombat(enemyWord);
     });
   }
 })();
