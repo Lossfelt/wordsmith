@@ -149,12 +149,22 @@ const DEV = true;
     if (panel) panel.hidden = false;
 
     // Kollaps/utvid: toggler .collapsed på panelet (CSS skjuler .dev-body).
+    // Tilstanden huskes pr. fane i sessionStorage så panelet beholder samme
+    // tilstand ved reload under dev.
     const btnToggle = document.getElementById('devToggle');
+    const STORAGE_KEY = 'devPanelCollapsed';
     if (panel && btnToggle) {
-      btnToggle.addEventListener('click', () => {
-        const collapsed = panel.classList.toggle('collapsed');
+      const setCollapsed = (collapsed) => {
+        panel.classList.toggle('collapsed', collapsed);
         btnToggle.textContent = collapsed ? '+' : '–';
         btnToggle.setAttribute('aria-expanded', String(!collapsed));
+        sessionStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0');
+      };
+
+      setCollapsed(sessionStorage.getItem(STORAGE_KEY) === '1');
+
+      btnToggle.addEventListener('click', () => {
+        setCollapsed(!panel.classList.contains('collapsed'));
       });
     }
 
