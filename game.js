@@ -148,6 +148,26 @@ const DEV = true;
     const panel = document.getElementById('devPanel');
     if (panel) panel.hidden = false;
 
+    // Kollaps/utvid: toggler .collapsed på panelet (CSS skjuler .dev-body).
+    // Tilstanden huskes i localStorage så panelet beholder samme tilstand
+    // på tvers av økter under dev.
+    const btnToggle = document.getElementById('devToggle');
+    const STORAGE_KEY = 'devPanelCollapsed';
+    if (panel && btnToggle) {
+      const setCollapsed = (collapsed) => {
+        panel.classList.toggle('collapsed', collapsed);
+        btnToggle.textContent = collapsed ? '+' : '–';
+        btnToggle.setAttribute('aria-expanded', String(!collapsed));
+        localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0');
+      };
+
+      setCollapsed(localStorage.getItem(STORAGE_KEY) === '1');
+
+      btnToggle.addEventListener('click', () => {
+        setCollapsed(!panel.classList.contains('collapsed'));
+      });
+    }
+
     // Scene-hopp: én knapp pr. scene, tvinger overgangen (utenfor loop-grafen).
     const devScenes = document.getElementById('devScenes');
     if (devScenes) {
