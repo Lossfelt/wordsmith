@@ -33,6 +33,7 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
 
   // --- DOM ---
   const enemyWordEl     = document.getElementById('enemyWord');
+  const enemyLookupEl   = document.getElementById('enemyLookup');
   const enemyStrengthEl = document.getElementById('enemyStrength');
   const healthFillEl    = document.getElementById('healthFill');
   const healthNumEl     = document.getElementById('healthNum');
@@ -42,6 +43,7 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
   const sortEl          = document.getElementById('combatSort');
   const btnAttack       = document.getElementById('btnAttack');
   const btnFlee         = document.getElementById('btnFlee');
+  const btnClear        = document.getElementById('btnClearWord');
   const invalidEl       = document.getElementById('combatInvalid');
   const resultEl        = document.getElementById('combatResult');
   const resultTextEl    = document.getElementById('combatResultText');
@@ -124,6 +126,7 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
     });
     wordValueEl.textContent = wordValue(built);
     btnAttack.disabled = built.length === 0;
+    if (btnClear) btnClear.disabled = built.length === 0;
   }
 
   // Inline-melding når ordet ikke er gyldig (vises ved angrepsforsøk, skjules
@@ -152,6 +155,19 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
     if (resolved) return;
     const letter = built.splice(index, 1)[0];
     pool[letter] = (pool[letter] || 0) + 1;
+    hideInvalid();
+    renderPool();
+    renderWord();
+  }
+
+  // Tøm hele ordet: legg alle bokstavene tilbake i poolen så man kan prøve et
+  // nytt ord. (removeFromWord tar én og én; dette er hele feltet på én knapp.)
+  function clearWord() {
+    if (resolved || !built.length) return;
+    while (built.length) {
+      const letter = built.pop();
+      pool[letter] = (pool[letter] || 0) + 1;
+    }
     hideInvalid();
     renderPool();
     renderWord();
@@ -297,6 +313,14 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
     enemyWordEl.textContent     = word;
     enemyStrengthEl.textContent = strength;
 
+    // Oppslagslenke til Bokmålsordboka (ordbokene.no) for fiendeordet, så man
+    // kan slå opp ukjente ord. Ordlista vår er bokmål fra samme institusjon (UiB),
+    // så /nob/bm/<ord> (små bokstaver) treffer riktig oppslag.
+    if (enemyLookupEl) {
+      enemyLookupEl.href  = 'https://ordbokene.no/nob/bm/' + encodeURIComponent(word.toLowerCase());
+      enemyLookupEl.title = `Slå opp «${word}» i ordboka`;
+    }
+
     if (player.health <= 0) player.health = player.maxHealth; // frisk start etter død (v1)
     renderHealth();
     renderPool();
@@ -313,6 +337,7 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
   // --- Knapper ---
   btnAttack.addEventListener('click', attack);
   btnFlee.addEventListener('click', flee);
+  if (btnClear) btnClear.addEventListener('click', clearWord);
   btnBack.addEventListener('click', () => {
     Inventory.render();
     // Scene-loopen (game.js) eier hva som skjer etter kamp: game over ved død,

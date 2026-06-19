@@ -37,10 +37,15 @@ const DEV = true;
     'Myrlandet', 'Dryppsteinhulen', 'Elvedalen', 'Vindsletta',
   ];
 
+  // Inventory-linja er ett delt UI-element utenfor scenene; den vises i basen og
+  // i samlingen (i kamp brukes poolen i stedet), skjules ellers.
+  const INVENTORY_SCENES = new Set(['base', 'search']);
+
   // --- DOM ---
   const baseDayEl     = document.getElementById('baseDay');
   const gameoverDayEl = document.getElementById('gameoverDay');
   const siteOptionsEl = document.getElementById('siteOptions');
+  const inventoryEl   = document.getElementById('inventoryPanel');
 
   // --- Spilltilstand ---
   const Game = {
@@ -59,6 +64,7 @@ const DEV = true;
     if (!ok) console.warn(`Game: uventet overgang ${from} → ${name} (tillates, men ikke i loop-grafen).`);
     Game.scene = name;
     showScene(name);
+    if (inventoryEl) inventoryEl.hidden = !INVENTORY_SCENES.has(name);
     const hook = onEnter[name];
     if (hook) hook();
   }

@@ -475,6 +475,12 @@ button:hover:not(.active) {
   color: #666;
   margin-bottom: 0.45rem;
 }
+.combat-enemy-wordrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
 .combat-enemy-word {
   font-family: 'Courier New', monospace;
   font-size: 2rem;
@@ -482,6 +488,23 @@ button:hover:not(.active) {
   letter-spacing: 0.15em;
   color: #e55;
 }
+/* Liten oppslagsknapp ved siden av fiendeordet → Bokmålsordboka (ny fane). */
+.combat-enemy-lookup {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: #aaa;
+  text-decoration: none;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+.combat-enemy-lookup:hover { background: #333; }
 .combat-enemy-strength {
   font-size: 0.9rem;
   color: #aaa;
@@ -532,13 +555,33 @@ button:hover:not(.active) {
   order: 2;
 }
 .combat-pool.split .combat-tile.vowel { order: 3; }
+/* Ordfeltet + nullstill-knappen på samme rad (knappen til høyre for feltet). */
+.combat-word-row {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+}
 .combat-word {
+  flex: 1;
+  min-width: 0;
   background: #000;
   border: 1px solid #333;
   border-radius: 8px;
   padding: 0.6rem;
   box-sizing: border-box;
+  /* Høyt nok til at én brikke (2.6rem) får plass uten at feltet vokser når
+     den første bokstaven legges inn. Overstyrer min-height fra felles-regelen. */
+  min-height: 4rem;
 }
+.combat-word-clear {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: #aaa;
+}
+.combat-word-clear:hover:not(:disabled) { background: #333; }
+.combat-word-clear:disabled { opacity: 0.4; cursor: default; }
 
 /* Brikker – brukes både i pool (med antall) og i ordet du bygger. */
 .combat-tile {

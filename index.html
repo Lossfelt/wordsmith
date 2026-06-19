@@ -93,11 +93,6 @@
 
     <div id="grid"></div>
     <div class="status" id="status">Variant: ingen</div>
-
-    <div class="inventory">
-      <div class="inventory-label">Inventory</div>
-      <div class="inventory-slots" id="inventory"></div>
-    </div>
   </div>
 
   <!-- Kamp-scenen: bygg et ord av bokstavene dine mot fiendeordet -->
@@ -112,13 +107,19 @@
 
     <div class="combat-enemy">
       <div class="combat-enemy-label">Fiende</div>
-      <div class="combat-enemy-word" id="enemyWord"></div>
+      <div class="combat-enemy-wordrow">
+        <div class="combat-enemy-word" id="enemyWord"></div>
+        <a class="combat-enemy-lookup" id="enemyLookup" href="#" target="_blank" rel="noopener noreferrer" title="Slå opp i ordboka" aria-label="Slå opp fiendeordet i ordboka">📖</a>
+      </div>
       <div class="combat-enemy-strength">Styrke: <span id="enemyStrength"></span></div>
     </div>
 
     <div class="combat-build">
       <div class="combat-word-label">Ditt ord (verdi: <span id="wordValue">0</span>)</div>
-      <div class="combat-word" id="combatWord"></div>
+      <div class="combat-word-row">
+        <div class="combat-word" id="combatWord"></div>
+        <button type="button" class="combat-word-clear" id="btnClearWord">Nullstill</button>
+      </div>
       <div class="combat-pool-label">Dine bokstaver</div>
       <div class="combat-sort" id="combatSort">
         <button type="button" class="combat-sort-btn active" data-sort="alpha">Alfabetisk</button>
@@ -158,6 +159,13 @@
     <div class="scene-actions">
       <button id="btnToStart" class="btn-primary">Til startskjerm</button>
     </div>
+  </div>
+
+  <!-- Inventory: delt UI-element. Vises i base- og samling-scenene (game.js
+       styrer synligheten); ligger utenfor scenene så det kan deles mellom dem. -->
+  <div class="inventory" id="inventoryPanel" hidden>
+    <div class="inventory-label">Inventory</div>
+    <div class="inventory-slots" id="inventory"></div>
   </div>
 
   <!-- Dev-panel (oppgave 3, lett skive): scene-hopp + testkontroller. Vises kun
