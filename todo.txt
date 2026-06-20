@@ -12,7 +12,7 @@
 
 7 [ ] - Lag knapper for å velge ulike kamp-moduser (basert på ulike regler for kampresolusjon), samt bygg inn reglene for kamp-resolusjon.
 
-8 [ ] - Hvor mange av dine bokstaver som dør bør være avhengig av hvor vanskelig kampen var. Hvis spillerens ord var overveldende sterkere enn fienden så dør færre eller ingen bokstaver. Hvis styrkeforholdet var jevnere så kan flere dø.
+8 [x] - Hvor mange av dine bokstaver som dør bør være avhengig av hvor vanskelig kampen var. Hvis spillerens ord var overveldende sterkere enn fienden så dør færre eller ingen bokstaver. Hvis styrkeforholdet var jevnere så kan flere dø. (combat.js: deathFraction(ratio) der ratio = ordverdi/fiendestyrke styrer andelen av ordets bokstaver som dor. To ytterpunkter med range, lineaer interpolasjon mellom + tilfeldig trekning i rangen: overveldende seier (ratio>=2) -> 0-20%, knusende tap (ratio<=0.5) -> 40-70%. Parametere OVERWHELM_RATIO/CRUSH_RATIO/WIN_LOSS/CRUSH_LOSS overst i combat.js. Seier gulv 0, tap minst 1. Overlegen seier uten dode far egen resultatmelding. Erstatter de faste 1-2 (seier) / 70-80% (tap) fra oppgave 4.)
 
 9 [ ] - (6b) Språkvalg NO/EN for hele siden (i18n). Hele UI-et skal kunne vises på norsk eller engelsk. Språkvalget skal også bytte grid-alfabetet (engelsk uten ÆØÅ, norsk med) og hvilken ordbok som brukes (legg til engelsk .txt-fil). Var språk-halvdelen «6b» av opprinnelig oppgave 6, skilt ut hit. Gjøres naturlig sammen med scene-arkitekturen (oppgave 2), siden språk velges før man starter spillet.
 

@@ -1,11 +1,15 @@
 // Kamp (oppgave 4). startCombat(enemyWord) viser kamp-scenen: du bygger et ord
 // av bokstavene du eier og sammenligner ordverdi (Scrabble) mot fiendens styrke.
 //
-// Regler (v1):
+// Regler (v2 – bokstavdød skalerer med styrkeforholdet, oppgave 8):
 //  - Spilleren har 100 helse (window.player).
-//  - Vinn (ditt ord >= fiende): 1–2 av ordets bokstaver dør, resten beholdes,
-//    du får 0–1 av fiendens bokstaver, ingen skade.
-//  - Tap (ditt ord < fiende): 70–80 % av ordets bokstaver dør, du tar
+//  - Andelen av ordets bokstaver som dør avhenger av ratio = ordverdi /
+//    fiendestyrke (deathFraction): overveldende seier koster 0-20 %, et
+//    knusende tap 40-70 %, mellomtilfeller interpoleres lineært (med en
+//    tilfeldig trekning innenfor den interpolerte rangen).
+//  - Vinn (ditt ord >= fiende): andelen over dør (gulv 0), du får 0–1 av
+//    fiendens bokstaver, ingen skade.
+//  - Tap (ditt ord < fiende): andelen over dør (minst 1) + du tar
 //    (fiendestyrke − ordverdi) skade.
 //  - Flykt: du mister ALLE bokstaver og tar max(0, fiendestyrke − inventarverdi).
 //  - Uavgjort teller som seier (spillerfordel).
@@ -22,11 +26,31 @@ const LETTER_VALUES = {
   N: 1, O: 2, P: 4, Q: 10, R: 1, S: 1, T: 1, U: 4, V: 4, W: 8, X: 8, Y: 6, Z: 10,
   Æ: 6, Ø: 5, Å: 4,
 };
+// Bokstavdød skalerer med styrkeforholdet (oppgave 8): andelen av ordets
+// bokstaver som dør, ut fra ratio = ordverdi / fiendestyrke. To ytterpunkter
+// med hver sin range; mellomtilfeller interpoleres lineært og trekkes tilfeldig
+// innenfor den interpolerte rangen.
+const OVERWHELM_RATIO = 2.0;        // ratio >= dette: overveldende seier (du dobbelt så sterk)
+const CRUSH_RATIO     = 0.5;        // ratio <= dette: knusende tap (fienden dobbelt så sterk)
+const WIN_LOSS        = [0.0, 0.2]; // andel av ordet som dør ved overveldende seier (0-20 %)
+const CRUSH_LOSS      = [0.4, 0.7]; // andel av ordet som dør ved knusende tap (40-70 %)
 // --- Spillertilstand ---
 window.player = { health: 100, maxHealth: 100 };
 
 function letterValue(letter) { return LETTER_VALUES[letter] || 0; }
 function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterValue(l), 0); }
+
+// Andel av ordets bokstaver som dør som funksjon av styrkeforholdet
+// ratio = ordverdi / fiendestyrke (oppgave 8). t går lineært fra 0 ved
+// knusende tap (ratio <= CRUSH_RATIO) til 1 ved overveldende seier
+// (ratio >= OVERWHELM_RATIO); range-grensene interpoleres over t, og andelen
+// trekkes tilfeldig innenfor [low, high].
+function deathFraction(ratio) {
+  const t = Math.min(1, Math.max(0, (ratio - CRUSH_RATIO) / (OVERWHELM_RATIO - CRUSH_RATIO)));
+  const low  = CRUSH_LOSS[0] + (WIN_LOSS[0] - CRUSH_LOSS[0]) * t;
+  const high = CRUSH_LOSS[1] + (WIN_LOSS[1] - CRUSH_LOSS[1]) * t;
+  return low + Math.random() * (high - low);
+}
 
 (function initCombat() {
   const player = window.player;
@@ -228,16 +252,19 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
     const playerVal = wordValue(built);
     const win = playerVal >= strength;
 
-    let deadCount, damage = 0, gained = null;
+    // Antall døde bokstaver skalerer med styrkeforholdet (oppgave 8): jo større
+    // seier, jo færre dør; jo verre tap, jo flere. Tap koster alltid minst én.
+    const ratio = playerVal / Math.max(1, strength);
+    const floor = win ? 0 : 1;
+    let deadCount = Math.round(deathFraction(ratio) * built.length);
+    deadCount = Math.min(Math.max(floor, deadCount), built.length);
 
+    let damage = 0, gained = null;
     if (win) {
-      deadCount = Math.min(randInt(1, 2), built.length);
       if (randInt(0, 1) === 1 && enemy.length) {
         gained = enemy[Math.floor(Math.random() * enemy.length)];
       }
     } else {
-      const frac = 0.7 + Math.random() * 0.1; // 70–80 %
-      deadCount = Math.min(Math.max(1, Math.round(built.length * frac)), built.length);
       damage = Math.max(0, strength - playerVal);
     }
 
@@ -272,7 +299,9 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
       msg = `Du flyktet og etterlot ${info.left} bokstav${plural(info.left)} (verdi ${info.totalVal}). `;
       msg += info.damage ? `Du tok ${info.damage} skade.` : 'Du slapp unna uten skade.';
     } else if (win) {
-      msg = `Du vant! Ordet ditt (${info.playerVal}) slo fienden (${strength}).`;
+      msg = info.dead.length === 0
+        ? `Du vant overlegent! Ordet ditt (${info.playerVal}) knuste fienden (${strength}) – ingen bokstaver gikk tapt.`
+        : `Du vant! Ordet ditt (${info.playerVal}) slo fienden (${strength}).`;
     } else {
       msg = `Du tapte. Ordet ditt (${info.playerVal}) tapte mot fienden (${strength}). Du tok ${info.damage} skade.`;
     }
