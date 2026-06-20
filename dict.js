@@ -2,9 +2,12 @@
 // window.Dict for (1) streng validering av spillerens bygde ord og (2) uttrekk
 // av fiendeord fra HELE ordboka via en konfigurerbar utvelgelseslogikk.
 //
-// Ordlistekilde: words-no.txt er filtrert fra «Norsk ordbank – bokmål 2005»
-// (Universitetet i Bergen / Språkbanken), lisensiert under CC-BY 4.0. Kun rene
-// bokstavord i spillalfabetet er beholdt (ingen bindestrek, tall eller tegnsetting).
+// Ordlistekilde: words-no.txt er NSF-ordlista (NSF25/2025) fra Norsk
+// Scrabbleforbund – en spillkuratert fullformsliste (bøyninger inkludert,
+// ikke-normerte former som «yoyo» fjernet). Brukes "som den er" jf. lisensen:
+// «Lista kan brukes fritt så lenge NSF krediteres, og lista brukes som den er
+// uten tillegg eller strykninger.» Kreditering vises på startskjermen (index.html).
+// Kilde: https://www2.scrabbleforbundet.no/?page_id=1488
 //
 // API:
 //   Dict.ready                 – true når ordlista er lastet
@@ -30,14 +33,22 @@ window.Dict = (function initDict() {
     while (readyCallbacks.length) readyCallbacks.shift()();
   }
 
+  // Spillalfabetet (fra grid.js, lastet før denne fila). NSF-lista inneholder
+  // ord som ikke kan bygges/vises i spillet: fremmedord med tegn utenfor
+  // alfabetet (ü/ö/é) og ordene på 1 bokstav. Disse holdes UTENFOR fiende-
+  // bøttene (byLength) så fienden alltid er byggbar, men beholdes i validerings-
+  // settet (words) – lista brukes "som den er", jf. NSF-lisensen.
   function ingest(text) {
+    const alphabet = new Set((window.CHARS || 'ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ').split(''));
+    const enemyEligible = (up) => up.length >= 2 && [...up].every(ch => alphabet.has(ch));
     const lens = [];
     for (const line of text.split(/\r?\n/)) {
       const w = line.trim();
       if (!w) continue;
       const up = w.toUpperCase();
       if (words.has(up)) continue;
-      words.add(up);
+      words.add(up);                       // validering: hele lista
+      if (!enemyEligible(up)) continue;    // fiende-uttrekk: kun byggbare ord
       const len = up.length;
       let bucket = byLength.get(len);
       if (!bucket) { bucket = []; byLength.set(len, bucket); lens.push(len); }

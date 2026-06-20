@@ -313,12 +313,13 @@ function wordValue(letters)  { return letters.reduce((sum, l) => sum + letterVal
     enemyWordEl.textContent     = word;
     enemyStrengthEl.textContent = strength;
 
-    // Oppslagslenke til Bokmålsordboka (ordbokene.no) for fiendeordet, så man
-    // kan slå opp ukjente ord. Ordlista vår er bokmål fra samme institusjon (UiB),
-    // så /nob/bm/<ord> (små bokstaver) treffer riktig oppslag.
+    // Oppslagslenke for fiendeordet. Ordlista vår er NSF-ordlista, så vi slår opp
+    // i en NSF-basert tjeneste (ordspill.com) i stedet for ordbokene.no – da treffer
+    // oppslaget alle gyldige fiendeord (ordbokene.no mangler en del NSF-ord) og
+    // bekrefter Scrabble-gyldighet + viser definisjon/bøyninger.
     if (enemyLookupEl) {
-      enemyLookupEl.href  = 'https://ordbokene.no/nob/bm/' + encodeURIComponent(word.toLowerCase());
-      enemyLookupEl.title = `Slå opp «${word}» i ordboka`;
+      enemyLookupEl.href  = 'https://www.ordspill.com/scrabble/ordbok/?q=' + encodeURIComponent(word);
+      enemyLookupEl.title = `Slå opp «${word}»`;
     }
 
     if (player.health <= 0) player.health = player.maxHealth; // frisk start etter død (v1)

@@ -342,6 +342,12 @@ button:hover:not(.active) {
   color: #aaa;
   margin: 0 0 1.5rem;
 }
+.scene-credit {
+  color: #666;
+  font-size: 0.8rem;
+  margin: 1.5rem 0 0;
+}
+.scene-credit a { color: #888; }
 .scene-day {
   color: #888;
   font-size: 1rem;
